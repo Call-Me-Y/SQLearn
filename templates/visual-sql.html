@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图形化编写 - SQLearn</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/sqlearn_no_bg.ico') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/sqlearn_no_bg.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="header">
+        <div class="nav-container">
+            <div class="logo" id="logo">SQLearn</div>
+            <div class="nav-links">
+                <a href="/" class="nav-link">首页</a>
+                <a href="/text" class="nav-link">查询试验</a>
+                <a href="/visual-sql" class="nav-link active">图形化编写</a>
+                <a href="/relationship-diagram" class="nav-link">关系图谱</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <!-- 侧边栏切换按钮 -->
+        <button class="sidebar-toggle-btn" id="toggleSidebar">
+            <span class="toggle-icon">◀</span>
+        </button>
+        
+        <!-- 左侧数据库结构面板 -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>数据库结构</h3>
+                <div class="database-switch">
+                    <button class="db-switch-btn active" data-db="study">Study</button>
+                    <button class="db-switch-btn" data-db="teach">Teach</button>
+                </div>
+            </div>
+            
+            <div class="database-structure" id="databaseStructure">
+                <!-- 数据库结构将通过JavaScript动态加载 -->
+            </div>
+        </div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <div class="page-header">
+                <h1>🎨 图形化编写</h1>
+                <p>通过鼠标滚动和点击的方式，直观地构建SQL查询语句（在侧边栏切换数据库）</p>
+            </div>
+            
+            <div class="workspace">
+                <!-- 统一的查询构建器 -->
+                <div class="query-builder unified" id="unifiedBuilder">
+                    <div class="builder-section">
+                        <h4>1. 选择列</h4>
+                        <div class="column-search-container">
+                            <input type="text" class="column-search-input" id="columnSearchInput" placeholder="搜索列名（代号或中文含义）...">
+                        </div>
+                        <div class="column-selector" id="columnSelector">
+                            <p>正在加载列信息...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="builder-section">
+                        <h4>2. 已选择的列（从左到右排列）</h4>
+                        <div class="selected-columns-container" id="selectedColumnsContainer">
+                            <p class="placeholder-text">点击上方列名添加到查询中</p>
+                        </div>
+                    </div>
+                    
+                    <div class="builder-section">
+                        <h4>2. 排序规则</h4>
+                        <div class="horizontal-list-container" id="orderContainer">
+                            <div class="horizontal-items" id="orderItems">
+                                <p class="placeholder-text">暂无排序规则</p>
+                            </div>
+                            <button class="add-item-btn" id="addOrderBtn">+ 添加</button>
+                        </div>
+                        <div class="item-editor" id="orderEditor" style="display: none;"></div>
+                    </div>
+                    
+                    <div class="builder-section">
+                        <h4>3. 简单过滤条件</h4>
+                        <div class="horizontal-list-container" id="simpleConditionContainer">
+                            <div class="horizontal-items" id="simpleConditionItems">
+                                <p class="placeholder-text">暂无过滤条件</p>
+                            </div>
+                            <button class="add-item-btn" id="addSimpleConditionBtn">+ 添加</button>
+                        </div>
+                        <div class="item-editor" id="simpleConditionEditor" style="display: none;"></div>
+                    </div>
+                    
+                    <div class="builder-section">
+                        <h4>4. 复杂过滤条件（子查询）</h4>
+                        <div class="horizontal-list-container" id="complexConditionContainer">
+                            <div class="horizontal-items" id="complexConditionItems">
+                                <p class="placeholder-text">暂无复杂过滤条件</p>
+                            </div>
+                            <button class="add-item-btn" id="addComplexCondition">+ 添加</button>
+                        </div>
+                        <div class="item-editor" id="complexConditionEditor" style="display: none;"></div>
+                    </div>
+                    
+                    <div class="builder-section">
+                        <h4>5. 顺序取查询数量</h4>
+                        <div class="top-limit-container">
+                            <input type="number" id="topLimit" min="1" placeholder="输入数量（可选）" style="width: 200px; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SQL预览和执行 -->
+                <div class="sql-builder">
+                    <div class="builder-header">
+                        <h3>SQL语句构建器</h3>
+                        <div class="builder-actions">
+                            <button class="action-btn" id="clearBuilder">清空</button>
+                            <button class="action-btn primary" id="generateSQL">生成SQL语句</button>
+                        </div>
+                    </div>
+                    
+                    <div class="builder-content">
+                        <div class="query-preview" id="queryPreview">
+                            <h4>生成的SQL语句：</h4>
+                            <div class="sql-solutions" id="sqlSolutions">
+                                <div class="sql-solution">
+                                    <div class="solution-header">
+                                        <span class="solution-type">方案 1</span>
+                                        <button class="execute-solution-btn" data-index="0">执行此方案</button>
+                                    </div>
+                                    <div class="sql-code" id="sqlCode0">
+                                        SELECT * FROM table_name;
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="query-results">
+                            <h4>查询结果：</h4>
+                            <div class="results-table" id="resultsTable">
+                                <p>点击"执行查询"或选择具体方案执行查看结果</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/visual-sql-builder.js') }}"></script>
+</body>
+</html>

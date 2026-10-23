@@ -1,0 +1,274 @@
+{
+  "study": {
+    "name": "Study数据库",
+    "tables": {
+      "C": {
+        "name": "C课程",
+        "columns": {
+          "CNO": {
+            "name": "课程编号",
+            "type": "nchar(10)",
+            "null": "null",
+            "key": ""
+          },
+          "CN": {
+            "name": "课程名称",
+            "type": "nvarchar(50)",
+            "null": "null",
+            "key": ""
+          },
+          "CREDIT": {
+            "name": "课程学分",
+            "type": "float",
+            "null": "null",
+            "key": ""
+          },
+          "CT": {
+            "name": "课程学时",
+            "type": "float",
+            "null": "null",
+            "key": ""
+          },
+          "TN": {
+            "name": "教师名称",
+            "type": "nvarchar(50)",
+            "null": "null",
+            "key": ""
+          }
+        }
+      },
+      "Homework": {
+        "name": "Homework作业成绩",
+        "columns": {
+          "CNO": {
+            "name": "课程编号",
+            "type": "nchar(10)",
+            "null": "null",
+            "key": ""
+          },
+          "SNO": {
+            "name": "学生编号",
+            "type": "nvarchar(50)",
+            "null": "null",
+            "key": ""
+          },
+          "HW1": {
+            "name": "作业1成绩",
+            "type": "float",
+            "null": "null",
+            "key": ""
+          },
+          "HW2": {
+            "name": "作业2成绩",
+            "type": "float",
+            "null": "null",
+            "key": ""
+          },
+          "HW3": {
+            "name": "作业3成绩",
+            "type": "float",
+            "null": "null",
+            "key": ""
+          }
+        }
+      },
+      "S": {
+        "name": "S学生",
+        "columns": {
+          "SNo": {
+            "name": "学生编号",
+            "type": "nchar(10)",
+            "null": "null",
+            "key": ""
+          },
+          "SN": {
+            "name": "学生姓名",
+            "type": "nvarchar(50)",
+            "null": "null",
+            "key": ""
+          },
+          "Sex": {
+            "name": "性别",
+            "type": "nchar(2)",
+            "null": "null",
+            "key": ""
+          },
+          "Class": {
+            "name": "班级",
+            "type": "nchar(10)",
+            "null": "null",
+            "key": ""
+          },
+          "Birth": {
+            "name": "出生日期",
+            "type": "date",
+            "null": "null",
+            "key": ""
+          },
+          "Phone": {
+            "name": "电话",
+            "type": "nchar(20)",
+            "null": "null",
+            "key": ""
+          }
+        }
+      }
+    }
+  },
+  "teach": {
+    "name": "Teach数据库",
+    "tables": {
+      "C": {
+        "name": "C课程",
+        "columns": {
+          "CNO": {
+            "name": "课程编号",
+            "type": "nchar(10)",
+            "null": "not null",
+            "key": "PK"
+          },
+          "CN": {
+            "name": "课程名称",
+            "type": "nvarchar(50)",
+            "null": "not null",
+            "key": ""
+          },
+          "CT": {
+            "name": "课程学时",
+            "type": "float",
+            "null": "null",
+            "key": ""
+          }
+        }
+      },
+      "S": {
+        "name": "S学生",
+        "columns": {
+          "SNo": {
+            "name": "学生编号",
+            "type": "nchar(10)",
+            "null": "not null",
+            "key": "PK"
+          },
+          "SN": {
+            "name": "学生姓名",
+            "type": "nvarchar(50)",
+            "null": "not null",
+            "key": ""
+          },
+          "Sex": {
+            "name": "性别",
+            "type": "nchar(2)",
+            "null": "not null",
+            "key": ""
+          },
+          "Age": {
+            "name": "年龄",
+            "type": "int",
+            "null": "not null",
+            "key": ""
+          },
+          "Dept": {
+            "name": "院系",
+            "type": "nvarchar(50)",
+            "null": "not null",
+            "key": ""
+          }
+        }
+      },
+      "SC": {
+        "name": "SC成绩",
+        "columns": {
+          "SNo": {
+            "name": "学生编号",
+            "type": "nchar(10)",
+            "null": "not null",
+            "key": "PK,FK"
+          },
+          "CNO": {
+            "name": "课程编号",
+            "type": "nchar(10)",
+            "null": "not null",
+            "key": "PK,FK"
+          },
+          "Score": {
+            "name": "成绩",
+            "type": "numeric(18,2)",
+            "null": "null",
+            "key": ""
+          }
+        }
+      },
+      "T": {
+        "name": "T教师",
+        "columns": {
+          "TNO": {
+            "name": "教师编号",
+            "type": "nchar(10)",
+            "null": "not null",
+            "key": "PK"
+          },
+          "TN": {
+            "name": "教师姓名",
+            "type": "nvarchar(50)",
+            "null": "not null",
+            "key": ""
+          },
+          "Sex": {
+            "name": "性别",
+            "type": "nchar(2)",
+            "null": "not null",
+            "key": ""
+          },
+          "Age": {
+            "name": "年龄",
+            "type": "int",
+            "null": "not null",
+            "key": ""
+          },
+          "Prof": {
+            "name": "教师职称",
+            "type": "nchar(10)",
+            "null": "not null",
+            "key": ""
+          },
+          "Sal": {
+            "name": "教师工资",
+            "type": "numeric(18,2)",
+            "null": "not null",
+            "key": ""
+          },
+          "Comm": {
+            "name": "教师佣金",
+            "type": "numeric(18,2)",
+            "null": "not null",
+            "key": ""
+          },
+          "Dept": {
+            "name": "院系",
+            "type": "nchar(20)",
+            "null": "not null",
+            "key": ""
+          }
+        }
+      },
+      "TC": {
+        "name": "TC教师课程",
+        "columns": {
+          "TNO": {
+            "name": "教师编号",
+            "type": "nchar(10)",
+            "null": "not null",
+            "key": "PK,FK"
+          },
+          "CNO": {
+            "name": "课程编号",
+            "type": "nchar(10)",
+            "null": "not null",
+            "key": "PK,FK"
+          }
+        }
+      }
+    }
+  }
+}

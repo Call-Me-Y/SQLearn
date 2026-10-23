@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专家级挑战 - SQLearn</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/sqlearn_no_bg.ico') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/sqlearn_no_bg.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/challenge.css') }}">
+</head>
+<body>
+    <div class="header">
+        <div class="nav-container">
+            <a href="/" class="logo">SQLearn</a>
+            <a href="/" class="back-btn">← 返回首页</a>
+        </div>
+    </div>
+    
+    <!-- 侧边栏 -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3>数据库结构</h3>
+            <button class="sidebar-toggle" onclick="toggleSidebar()">×</button>
+        </div>
+        <div class="sidebar-content" id="sidebar-content">
+            <!-- 侧边栏内容将通过JavaScript动态生成 -->
+        </div>
+    </div>
+    
+    <!-- 侧边栏切换按钮 -->
+    <button class="sidebar-toggle-btn" onclick="toggleSidebar()">📊</button>
+    
+    <div class="main-container">
+        <div class="challenge-header">
+            <div class="difficulty-badge difficulty-hard">专家级挑战</div>
+            <h1 class="challenge-title">⚡ 专家级挑战</h1>
+            <p class="challenge-subtitle">使用Teach数据库，涉及JOIN、子查询、聚合函数等高级SQL特性，掌握高级查询操作</p>
+            
+            <div class="progress-info">
+                <div class="progress-stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="completed-count">0</span>
+                        <span class="stat-label">已完成</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="total-count">100</span>
+                        <span class="stat-label">总题数</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="progress-percent">0%</span>
+                        <span class="stat-label">完成率</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 完成提示 -->
+        <div id="completion-message" class="completion-message" style="display: none;">
+            <div class="completion-icon">🏆</div>
+            <h2 class="completion-title">恭喜！您已成为SQL专家！</h2>
+            <p class="completion-text">您已经通过了专家级挑战，是真正的SQL大师！</p>
+            <div class="completion-stats">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-value" id="final-completed">0</div>
+                        <div class="stat-card-label">完成题目</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-value">专家</div>
+                        <div class="stat-card-label">当前等级</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-value">🏆</div>
+                        <div class="stat-card-label">成就</div>
+                    </div>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <a href="/" class="action-btn submit-btn">返回首页</a>
+            </div>
+        </div>
+        
+        <!-- 题目容器 -->
+        <div id="question-container" class="question-container">
+            <div class="question-header">
+                <div class="question-title-row">
+                    <h3 class="question-title">专家题目 <span id="question-number">1</span></h3>
+                    <div class="timer-container">
+                        <div class="timer-label">剩余时间</div>
+                        <div class="timer-display" id="timer-display">30</div>
+                        <div class="timer-unit">秒</div>
+                    </div>
+                </div>
+                <p class="question-text" id="question-text">加载中...</p>
+            </div>
+            <div class="question-content">
+                <div class="sql-input-section">
+                    <label for="sql-input" class="sql-input-label">请输入您的SQL查询语句：</label>
+                    <textarea id="sql-input" class="sql-input" placeholder="SELECT * FROM ..."></textarea>
+                </div>
+                <div class="action-buttons">
+                    <button id="submit-btn" class="action-btn submit-btn">提交答案</button>
+                    <button id="next-btn" class="action-btn next-btn" style="display: none;">下一题</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 结果容器 -->
+        <div id="result-container" class="result-container" style="display: none;">
+            <div class="result-header" id="result-header">
+                <span id="result-message">结果</span>
+            </div>
+            <div class="result-content">
+                <div id="result-message-content"></div>
+                <div id="answer-section" class="answer-section" style="display: none;">
+                    <label class="answer-label">正确答案：</label>
+                    <pre class="answer-sql" id="correct-answer"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 全局变量
+        let currentQuestion = null;
+        let questionsData = [];
+        let completedQuestions = [];
+        const STORAGE_KEY = 'expert_challenge_completed';
+        
+        // 侧边栏相关变量
+        let databaseStructure = null;
+        let sidebarOpen = false;
+        
+        // 倒计时相关变量
+        let timerInterval = null;
+        let timeLeft = 30; // 30秒倒计时
+        let isTimerPaused = false;
+        
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCompletedQuestions();
+            loadQuestionsData();
+            updateProgress();
+            loadDatabaseStructure();
+        });
+        
+        // 加载已完成的题目
+        function loadCompletedQuestions() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                completedQuestions = JSON.parse(stored);
+            }
+        }
+        
+        // 保存已完成的题目
+        function saveCompletedQuestions() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(completedQuestions));
+        }
+        
+        // 加载题目数据
+        async function loadQuestionsData() {
+            try {
+                const response = await fetch('/static/data/expert.json');
+                questionsData = await response.json();
+                
+                // 检查是否全部完成
+                if (completedQuestions.length >= questionsData.length) {
+                    showCompletionMessage();
+                    return;
+                }
+                
+                loadRandomQuestion();
+            } catch (error) {
+                console.error('加载题目数据失败:', error);
+                document.getElementById('question-text').textContent = '加载题目失败，请刷新页面重试';
+            }
+        }
+        
+        // 加载随机题目
+        function loadRandomQuestion() {
+            // 获取未完成的题目
+            const availableQuestions = questionsData.filter(q => !completedQuestions.includes(q.id));
+            
+            if (availableQuestions.length === 0) {
+                showCompletionMessage();
+                return;
+            }
+            
+            // 随机选择一道题目
+            const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+            currentQuestion = availableQuestions[randomIndex];
+            
+            // 更新题目显示
+            document.getElementById('question-number').textContent = currentQuestion.id;
+            document.getElementById('question-text').textContent = currentQuestion.question;
+            document.getElementById('sql-input').value = '';
+            
+            // 隐藏结果容器
+            document.getElementById('result-container').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('submit-btn').style.display = 'inline-block';
+            
+            // 启动倒计时
+            startTimer();
+        }
+        
+        // 显示完成消息
+        function showCompletionMessage() {
+            document.getElementById('question-container').style.display = 'none';
+            document.getElementById('completion-message').style.display = 'block';
+            document.getElementById('final-completed').textContent = completedQuestions.length;
+        }
+        
+        // 更新进度
+        function updateProgress() {
+            const completedCount = completedQuestions.length;
+            const totalCount = questionsData.length || 100;
+            const progressPercent = Math.round((completedCount / totalCount) * 100);
+            
+            document.getElementById('completed-count').textContent = completedCount;
+            document.getElementById('total-count').textContent = totalCount;
+            document.getElementById('progress-percent').textContent = progressPercent + '%';
+        }
+        
+        // 开始倒计时
+        function startTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            
+            timeLeft = 30;
+            isTimerPaused = false;
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                if (!isTimerPaused) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    
+                    if (timeLeft <= 0) {
+                        // 时间到，自动提交错误答案
+                        clearInterval(timerInterval);
+                        handleTimeUp();
+                    }
+                }
+            }, 1000);
+        }
+        
+        // 暂停倒计时
+        function pauseTimer() {
+            isTimerPaused = true;
+        }
+        
+        // 停止倒计时
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            isTimerPaused = false;
+        }
+        
+        // 更新倒计时显示
+        function updateTimerDisplay() {
+            const timerDisplay = document.getElementById('timer-display');
+            const timerContainer = document.querySelector('.timer-container');
+            
+            if (timerDisplay && timerContainer) {
+                timerDisplay.textContent = timeLeft;
+                
+                // 根据剩余时间改变颜色和样式
+                if (timeLeft <= 10) {
+                    timerDisplay.style.color = '#ff4444';
+                    timerContainer.className = 'timer-container danger';
+                } else if (timeLeft <= 20) {
+                    timerDisplay.style.color = '#ff8800';
+                    timerContainer.className = 'timer-container warning';
+                } else {
+                    timerDisplay.style.color = '#333';
+                    timerContainer.className = 'timer-container';
+                }
+            }
+        }
+        
+        // 时间到处理
+        function handleTimeUp() {
+            // 显示时间到的消息
+            const resultContainer = document.getElementById('result-container');
+            const resultHeader = document.getElementById('result-header');
+            const resultMessage = document.getElementById('result-message');
+            const resultMessageContent = document.getElementById('result-message-content');
+            const answerSection = document.getElementById('answer-section');
+            const correctAnswer = document.getElementById('correct-answer');
+            const submitBtn = document.getElementById('submit-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            resultContainer.style.display = 'block';
+            resultHeader.className = 'result-header result-wrong';
+            resultMessage.textContent = '⏰ 时间到！';
+            resultMessageContent.innerHTML = '<div class="wrong-message">很遗憾，时间到了，这道题被标记为错误</div>';
+            answerSection.style.display = 'block';
+            correctAnswer.textContent = currentQuestion.sql;
+            
+            submitBtn.style.display = 'none';
+            nextBtn.style.display = 'inline-block';
+        }
+        
+        // 提交答案
+        document.getElementById('submit-btn').addEventListener('click', async function() {
+            const userSQL = document.getElementById('sql-input').value.trim();
+            
+            if (!userSQL) {
+                alert('请输入SQL查询语句');
+                return;
+            }
+            
+            // 暂停倒计时
+            pauseTimer();
+            
+            // 禁用提交按钮，显示加载状态
+            const submitBtn = document.getElementById('submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = '正在检查...';
+            
+            try {
+                // 通过后端API比较SQL执行结果
+                const isCorrect = await compareSQLResults(userSQL, currentQuestion.sql);
+                showResult(isCorrect);
+            } catch (error) {
+                console.error('比较SQL结果时出错:', error);
+                alert('检查答案时出错，请重试');
+            } finally {
+                // 恢复按钮状态
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+        
+        // 通过后端API比较SQL执行结果
+        async function compareSQLResults(userSQL, correctSQL) {
+            const response = await fetch('/api/compare-sql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_sql: userSQL,
+                    correct_sql: correctSQL,
+                    database: 'study'
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (!result.success) {
+                throw new Error(result.error || '比较失败');
+            }
+            
+            return result.is_correct;
+        }
+        
+        // 显示结果
+        function showResult(isCorrect) {
+            // 停止倒计时
+            stopTimer();
+            
+            const resultContainer = document.getElementById('result-container');
+            const resultHeader = document.getElementById('result-header');
+            const resultMessage = document.getElementById('result-message');
+            const resultMessageContent = document.getElementById('result-message-content');
+            const answerSection = document.getElementById('answer-section');
+            const correctAnswer = document.getElementById('correct-answer');
+            const submitBtn = document.getElementById('submit-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            resultContainer.style.display = 'block';
+            
+            if (isCorrect) {
+                // 答对了
+                resultHeader.className = 'result-header result-correct';
+                resultMessage.textContent = '✅ 回答正确！';
+                resultMessageContent.innerHTML = '<div class="correct-message">恭喜您答对了！</div>';
+                answerSection.style.display = 'none';
+                
+                // 记录已完成的题目
+                if (!completedQuestions.includes(currentQuestion.id)) {
+                    completedQuestions.push(currentQuestion.id);
+                    saveCompletedQuestions();
+                    updateProgress();
+                }
+                
+                // 检查是否全部完成
+                if (completedQuestions.length >= questionsData.length) {
+                    setTimeout(() => {
+                        showCompletionMessage();
+                    }, 2000);
+                    return;
+                }
+            } else {
+                // 答错了
+                resultHeader.className = 'result-header result-wrong';
+                resultMessage.textContent = '❌ 回答错误';
+                resultMessageContent.innerHTML = '<div class="wrong-message">很遗憾，答案不正确</div>';
+                answerSection.style.display = 'block';
+                correctAnswer.textContent = currentQuestion.sql;
+            }
+            
+            submitBtn.style.display = 'none';
+            nextBtn.style.display = 'inline-block';
+        }
+        
+        // 下一题
+        document.getElementById('next-btn').addEventListener('click', function() {
+            loadRandomQuestion();
+        });
+        
+        // 侧边栏相关函数
+        // 加载数据库结构
+        async function loadDatabaseStructure() {
+            try {
+                const response = await fetch('/static/data/database_structure.json');
+                databaseStructure = await response.json();
+                generateSidebarContent();
+            } catch (error) {
+                console.error('加载数据库结构失败:', error);
+            }
+        }
+        
+        // 生成侧边栏内容
+        function generateSidebarContent() {
+            if (!databaseStructure) return;
+            
+            const sidebarContent = document.getElementById('sidebar-content');
+            let html = '';
+            
+            // 遍历数据库结构
+            Object.keys(databaseStructure).forEach(dbName => {
+                const db = databaseStructure[dbName];
+                html += `<div class="database-section">
+                    <h4 class="database-name">${db.name}</h4>
+                    <div class="tables-container">`;
+                
+                Object.keys(db.tables).forEach(tableName => {
+                    const table = db.tables[tableName];
+                    html += `<div class="table-item">
+                        <div class="table-header">
+                            <span class="table-name" onclick="toggleTable('${dbName}', '${tableName}')">${table.name}</span>
+                            <div class="table-actions">
+                                <button class="detail-btn" onclick="showTableDetails('${dbName}', '${tableName}')" title="查看详细数据">⋯</button>
+                                <span class="table-toggle" onclick="toggleTable('${dbName}', '${tableName}')">+</span>
+                            </div>
+                        </div>
+                        <div class="table-columns" id="columns-${dbName}-${tableName}" style="display: none;">`;
+                    
+                    Object.keys(table.columns).forEach(columnName => {
+                        const column = table.columns[columnName];
+                        html += `<div class="column-item">
+                            <span class="column-name">${columnName}</span>
+                            <span class="column-type">${column.type}</span>
+                            <span class="column-key">${column.key}</span>
+                        </div>`;
+                    });
+                    
+                    html += `</div></div>`;
+                });
+                
+                html += `</div></div>`;
+            });
+            
+            sidebarContent.innerHTML = html;
+        }
+        
+        // 切换表格显示
+        function toggleTable(dbName, tableName) {
+            const columnsDiv = document.getElementById(`columns-${dbName}-${tableName}`);
+            const toggle = event.target.querySelector('.table-toggle');
+            
+            if (columnsDiv.style.display === 'none') {
+                columnsDiv.style.display = 'block';
+                toggle.textContent = '-';
+            } else {
+                columnsDiv.style.display = 'none';
+                toggle.textContent = '+';
+            }
+        }
+        
+        // 切换侧边栏显示
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.sidebar-toggle-btn');
+            
+            if (sidebarOpen) {
+                sidebar.style.transform = 'translateX(-100%)';
+                toggleBtn.style.transform = 'translateX(0)';
+                sidebarOpen = false;
+            } else {
+                sidebar.style.transform = 'translateX(0)';
+                toggleBtn.style.transform = 'translateX(300px)';
+                sidebarOpen = true;
+            }
+        }
+        
+        // 显示表格详细数据
+        async function showTableDetails(dbName, tableName) {
+            try {
+                const response = await fetch('/static/data/database_table.json');
+                const tableData = await response.json();
+                
+                // 转换数据库名称为大写（database_structure.json中是study/teach，database_table.json中是Study/Teach）
+                const dbNameUpper = dbName.charAt(0).toUpperCase() + dbName.slice(1);
+                
+                // 获取对应数据库和表格的数据
+                let data = null;
+                if (tableData[dbNameUpper] && tableData[dbNameUpper][tableName]) {
+                    data = tableData[dbNameUpper][tableName];
+                }
+                
+                if (!data || data.length === 0) {
+                    alert('暂无数据');
+                    return;
+                }
+                
+                // 创建弹窗
+                createTableDetailsPopup(dbName, tableName, data);
+                
+            } catch (error) {
+                console.error('加载表格数据失败:', error);
+                alert('加载数据失败');
+            }
+        }
+        
+        // 创建表格详情弹窗
+        function createTableDetailsPopup(dbName, tableName, data) {
+            // 移除已存在的弹窗
+            const existingPopup = document.getElementById('table-details-popup');
+            if (existingPopup) {
+                existingPopup.remove();
+            }
+            
+            // 创建弹窗HTML
+            const popup = document.createElement('div');
+            popup.id = 'table-details-popup';
+            popup.className = 'table-details-popup';
+            
+            // 获取列名
+            const columns = Object.keys(data[0]);
+            
+            let tableHtml = `
+                <div class="popup-overlay" onclick="closeTableDetailsPopup()"></div>
+                <div class="popup-content">
+                    <div class="popup-header">
+                        <h3>${tableName} 详细数据</h3>
+                        <button class="popup-close" onclick="closeTableDetailsPopup()">×</button>
+                    </div>
+                    <div class="popup-body">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>`;
+            
+            // 添加表头
+            columns.forEach(column => {
+                tableHtml += `<th>${column}</th>`;
+            });
+            tableHtml += `</tr></thead><tbody>`;
+            
+            // 添加数据行
+            data.forEach(row => {
+                tableHtml += `<tr>`;
+                columns.forEach(column => {
+                    const value = row[column];
+                    const displayValue = value === null ? 'NULL' : value;
+                    tableHtml += `<td>${displayValue}</td>`;
+                });
+                tableHtml += `</tr>`;
+            });
+            
+            tableHtml += `</tbody></table>
+                        </div>
+                    </div>
+                </div>`;
+            
+            popup.innerHTML = tableHtml;
+            document.body.appendChild(popup);
+            
+            // 显示弹窗
+            setTimeout(() => {
+                popup.classList.add('show');
+            }, 10);
+        }
+        
+        // 关闭表格详情弹窗
+        function closeTableDetailsPopup() {
+            const popup = document.getElementById('table-details-popup');
+            if (popup) {
+                popup.classList.remove('show');
+                setTimeout(() => {
+                    popup.remove();
+                }, 300);
+            }
+        }
+    </script>
+</body>
+</html>

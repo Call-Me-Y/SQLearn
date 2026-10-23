@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>查询试验 - SQLearn</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/sqlearn_no_bg.ico') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/sqlearn_no_bg.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.css">
+    <style>
+        .sql-input-section {
+            margin-bottom: 30px;
+        }
+        
+        .sql-input-section h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 1.1rem;
+        }
+        
+        .sql-input-container {
+            position: relative;
+        }
+        
+        .sql-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+        
+        .sql-textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+        
+        /* CodeMirror 样式 */
+        .CodeMirror {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            min-height: 200px;
+            font-size: 14px;
+            line-height: 1.6;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .CodeMirror:focus-within {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+        
+        .CodeMirror-scroll {
+            min-height: 200px;
+        }
+        
+        /* CodeMirror 自动完成提示框样式 */
+        .CodeMirror-hints {
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 10000;
+        }
+        
+        .CodeMirror-hint {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .CodeMirror-hint:hover,
+        .CodeMirror-hint-selected {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .CodeMirror-hint-type {
+            color: #666;
+            font-size: 11px;
+            margin-left: 8px;
+        }
+        
+        .sql-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .sql-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .sql-btn.primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .sql-btn.primary:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+        }
+        
+        .sql-btn.secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .sql-btn.secondary:hover {
+            background: #5a6268;
+        }
+        
+        .sql-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .query-results {
+            margin-top: 30px;
+        }
+        
+        .results-table {
+            margin-top: 15px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 15px;
+        }
+        
+        .results-table-content {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        
+        .results-table-content th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .results-table-content td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .results-table-content tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .result-summary {
+            margin-top: 15px;
+            padding: 10px;
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+        }
+        
+        .result-summary p {
+            margin: 0;
+            color: #004085;
+            font-weight: 500;
+        }
+        
+        .error-message {
+            padding: 20px;
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+        
+        .error-message h4 {
+            margin: 0 0 10px 0;
+            color: #721c24;
+        }
+        
+        .error-message p {
+            margin: 0;
+            color: #721c24;
+        }
+        
+        .loading {
+            padding: 20px;
+            text-align: center;
+            color: #007bff;
+            font-weight: 500;
+        }
+        
+        .no-results {
+            padding: 40px;
+            text-align: center;
+            color: #6c757d;
+        }
+        
+        .no-results p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="nav-container">
+            <div class="logo" id="logo">SQLearn</div>
+            <div class="nav-links">
+                <a href="/" class="nav-link">首页</a>
+                <a href="/text" class="nav-link active">查询试验</a>
+                <a href="/visual-sql" class="nav-link">图形化编写</a>
+                <a href="/relationship-diagram" class="nav-link">关系图谱</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <!-- 侧边栏切换按钮 -->
+        <button class="sidebar-toggle-btn" id="toggleSidebar">
+            <span class="toggle-icon">◀</span>
+        </button>
+        
+        <!-- 左侧数据库结构面板 -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>数据库结构</h3>
+                <div class="database-switch">
+                    <button class="db-switch-btn active" data-db="study">Study</button>
+                    <button class="db-switch-btn" data-db="teach">Teach</button>
+                </div>
+            </div>
+            
+            <div class="database-structure" id="databaseStructure">
+                <!-- 数据库结构将通过JavaScript动态加载 -->
+            </div>
+        </div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <div class="page-header">
+                <h1>💻 查询试验</h1>
+                <p>手动输入SQL查询语句并查看执行结果（在侧边栏切换数据库）</p>
+            </div>
+            
+            <div class="workspace">
+                <!-- SQL输入和执行区域 -->
+                <div class="sql-builder">
+                    <div class="builder-header">
+                        <h3>SQL查询编辑器</h3>
+                        <div class="builder-actions">
+                            <button class="action-btn" id="clearSQL">清空</button>
+                            <button class="action-btn primary" id="executeSQL">执行查询</button>
+                        </div>
+                    </div>
+                    
+                    <div class="builder-content">
+                        <div class="sql-input-section">
+                            <h4>输入SQL查询语句：</h4>
+                            <div class="sql-input-container">
+                                <textarea 
+                                    id="sqlInput" 
+                                    class="sql-textarea" 
+                                    placeholder="请输入SQL查询语句，例如：&#10;SELECT * FROM S;&#10;&#10;或&#10;&#10;SELECT S.SNo, S.SN, C.CN&#10;FROM S, C, SC&#10;WHERE S.SNo = SC.SNo AND SC.CNo = C.CNo;"
+                                ></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="query-results">
+                            <h4>查询结果：</h4>
+                            <div class="results-table" id="resultsTable">
+                                <p>请输入SQL语句并点击"执行查询"查看结果</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/sql/sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/sql-hint.min.js"></script>
+    <script>
+        // CodeMirror 编辑器实例
+        let sqlEditor = null;
+        
+        // 获取当前选中的数据库
+        function getCurrentDatabase() {
+            const activeBtn = document.querySelector('.db-switch-btn.active');
+            return activeBtn ? activeBtn.getAttribute('data-db') : 'study';
+        }
+        
+        // 初始化 CodeMirror 编辑器
+        function initCodeMirror() {
+            const textarea = document.getElementById('sqlInput');
+            if (!textarea) return;
+            
+            // 创建 CodeMirror 实例
+            sqlEditor = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-sql',
+                theme: 'material',
+                lineNumbers: true,
+                lineWrapping: true,
+                indentWithTabs: false,
+                indentUnit: 2,
+                tabSize: 2,
+                autofocus: false,
+                extraKeys: {
+                    "Ctrl-Space": "autocomplete",
+                    "Ctrl-Enter": function() {
+                        executeQuery();
+                    }
+                },
+                hintOptions: {
+                    tables: getSQLHints()
+                }
+            });
+            
+            // 自定义 SQL 自动完成 - 输入时触发
+            sqlEditor.on('inputRead', function(cm, change) {
+                if (change.text[0].length > 0 && /[\w\.]$/.test(change.text[0])) {
+                    setTimeout(() => {
+                        CodeMirror.commands.autocomplete(cm, null, {
+                            completeSingle: false,
+                            hint: customSQLHint
+                        });
+                    }, 100);
+                }
+            });
+            
+            // 确保编辑器尺寸正确
+            setTimeout(() => {
+                sqlEditor.refresh();
+            }, 100);
+            
+            // 监听窗口大小变化，调整编辑器
+            window.addEventListener('resize', function() {
+                if (sqlEditor) {
+                    setTimeout(() => {
+                        sqlEditor.refresh();
+                    }, 100);
+                }
+            });
+        }
+        
+        // 获取 SQL 提示数据
+        function getSQLHints() {
+            const db = getCurrentDatabase();
+            const hints = {};
+            
+            if (databaseStructure && databaseStructure[db]) {
+                const dbData = databaseStructure[db];
+                Object.keys(dbData.tables).forEach(tableKey => {
+                    const table = dbData.tables[tableKey];
+                    hints[tableKey] = [];
+                    Object.keys(table.columns).forEach(columnKey => {
+                        hints[tableKey].push(columnKey);
+                    });
+                });
+            }
+            
+            return hints;
+        }
+        
+        // 自定义 SQL 自动完成函数
+        function customSQLHint(editor, options) {
+            const cursor = editor.getCursor();
+            const line = editor.getLine(cursor.line);
+            let start = cursor.ch;
+            let end = cursor.ch;
+            
+            // 向前查找单词开始位置
+            while (start > 0 && /[\w\.]/.test(line.charAt(start - 1))) {
+                start--;
+            }
+            // 向后查找单词结束位置
+            while (end < line.length && /[\w\.]/.test(line.charAt(end))) {
+                end++;
+            }
+            
+            const word = line.slice(start, end);
+            const prefix = word.toLowerCase();
+            
+            // SQL 关键字列表
+            const sqlKeywords = [
+                'SELECT', 'FROM', 'WHERE', 'GROUP BY', 'ORDER BY', 'HAVING',
+                'INSERT', 'UPDATE', 'DELETE', 'CREATE', 'ALTER', 'DROP',
+                'JOIN', 'INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'FULL JOIN',
+                'ON', 'AS', 'AND', 'OR', 'NOT', 'IN', 'LIKE', 'BETWEEN',
+                'IS NULL', 'IS NOT NULL', 'EXISTS', 'UNION', 'ALL', 'DISTINCT',
+                'COUNT', 'SUM', 'AVG', 'MAX', 'MIN', 'TOP', 'LIMIT'
+            ];
+            
+            // 获取数据库结构提示
+            const db = getCurrentDatabase();
+            const hints = [];
+            
+            // 添加 SQL 关键字
+            sqlKeywords.forEach(keyword => {
+                if (keyword.toLowerCase().startsWith(prefix) || prefix === '') {
+                    hints.push({
+                        text: keyword,
+                        displayText: keyword,
+                        className: 'sql-keyword-hint'
+                    });
+                }
+            });
+            
+            // 添加表名和列名
+            if (databaseStructure && databaseStructure[db]) {
+                const dbData = databaseStructure[db];
+                Object.keys(dbData.tables).forEach(tableKey => {
+                    const table = dbData.tables[tableKey];
+                    const tableName = tableKey.toLowerCase();
+                    const tableDisplayName = `${tableKey} (${table.name})`;
+                    
+                    // 如果当前词包含点，可能是表.列的形式
+                    if (word.includes('.')) {
+                        const parts = word.split('.');
+                        const tablePart = parts[0].toLowerCase();
+                        const columnPart = parts.length > 1 ? parts.slice(1).join('.').toLowerCase() : '';
+                        
+                        if (tablePart === tableName || tablePart === '') {
+                            // 添加列名提示
+                            Object.keys(table.columns).forEach(columnKey => {
+                                const column = table.columns[columnKey];
+                                const columnName = columnKey.toLowerCase();
+                                const fullColumnName = `${tableKey}.${columnKey}`;
+                                const columnDisplayName = `${columnKey} (${column.name}, ${column.type})`;
+                                
+                                if (columnPart === '' || columnName.startsWith(columnPart)) {
+                                    hints.push({
+                                        text: fullColumnName,
+                                        displayText: `${tableKey}.${columnKey}`,
+                                        className: 'sql-column-hint',
+                                        render: (el, self, data) => {
+                                            el.innerHTML = `<strong>${fullColumnName}</strong><span class="CodeMirror-hint-type">${column.name} (${column.type})</span>`;
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    } else {
+                        // 添加表名提示
+                        if (tableName.startsWith(prefix) || prefix === '') {
+                            hints.push({
+                                text: tableKey,
+                                displayText: tableKey,
+                                className: 'sql-table-hint',
+                                render: (el, self, data) => {
+                                    el.innerHTML = `<strong>${tableKey}</strong><span class="CodeMirror-hint-type">${table.name}</span>`;
+                                }
+                            });
+                        }
+                        
+                        // 添加列名提示（不带表名前缀）
+                        Object.keys(table.columns).forEach(columnKey => {
+                            const column = table.columns[columnKey];
+                            const columnName = columnKey.toLowerCase();
+                            
+                            if (columnName.startsWith(prefix) || prefix === '') {
+                                hints.push({
+                                    text: columnKey,
+                                    displayText: columnKey,
+                                    className: 'sql-column-hint',
+                                    render: (el, self, data) => {
+                                        el.innerHTML = `<strong>${columnKey}</strong><span class="CodeMirror-hint-type">${column.name} (${table.name}.${column.type})</span>`;
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+            
+            // 去重并按字母顺序排序
+            const uniqueHints = [];
+            const seen = new Set();
+            hints.forEach(hint => {
+                if (!seen.has(hint.text)) {
+                    seen.add(hint.text);
+                    uniqueHints.push(hint);
+                }
+            });
+            
+            uniqueHints.sort((a, b) => {
+                // SQL 关键字优先
+                const aIsKeyword = sqlKeywords.includes(a.text);
+                const bIsKeyword = sqlKeywords.includes(b.text);
+                if (aIsKeyword && !bIsKeyword) return -1;
+                if (!aIsKeyword && bIsKeyword) return 1;
+                return a.text.localeCompare(b.text);
+            });
+            
+            return {
+                list: uniqueHints.slice(0, 50), // 限制最多显示50个提示
+                from: CodeMirror.Pos(cursor.line, start),
+                to: CodeMirror.Pos(cursor.line, end)
+            };
+        }
+        
+        // 显示查询结果
+        function displayQueryResults(result, container) {
+            if (!result.data || result.data.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <p>查询成功，但没有返回数据</p>
+                        <p>共 ${result.row_count || 0} 行</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let tableHtml = '<div class="table-container">';
+            tableHtml += '<table class="results-table-content">';
+            
+            // 表头
+            if (result.columns && result.columns.length > 0) {
+                tableHtml += '<thead><tr>';
+                result.columns.forEach(column => {
+                    tableHtml += `<th>${column}</th>`;
+                });
+                tableHtml += '</tr></thead>';
+            }
+            
+            // 表体
+            tableHtml += '<tbody>';
+            result.data.forEach(row => {
+                tableHtml += '<tr>';
+                row.forEach(cell => {
+                    const displayValue = cell === null ? 'NULL' : cell;
+                    tableHtml += `<td>${displayValue}</td>`;
+                });
+                tableHtml += '</tr>';
+            });
+            tableHtml += '</tbody>';
+            tableHtml += '</table>';
+            tableHtml += '</div>';
+            
+            // 添加结果统计信息
+            tableHtml += `
+                <div class="result-summary">
+                    <p>查询成功，共返回 ${result.row_count || 0} 行数据</p>
+                </div>
+            `;
+            
+            container.innerHTML = tableHtml;
+        }
+        
+        // 执行SQL查询
+        async function executeQuery() {
+            const resultsTable = document.getElementById('resultsTable');
+            const executeBtn = document.getElementById('executeSQL');
+            
+            if (!sqlEditor || !resultsTable) return;
+            
+            // 从 CodeMirror 编辑器获取 SQL 内容
+            const sqlQuery = sqlEditor.getValue().trim();
+            
+            if (!sqlQuery) {
+                showNotification('请输入SQL查询语句', 'error');
+                return;
+            }
+            
+            // 显示加载状态
+            if (executeBtn) {
+                executeBtn.disabled = true;
+                executeBtn.textContent = '执行中...';
+            }
+            
+            resultsTable.innerHTML = `
+                <div class="loading">正在执行查询...</div>
+            `;
+            
+            try {
+                // 调用后端API执行SQL查询
+                const response = await fetch('/api/execute-sql', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sql: sqlQuery,
+                        database: getCurrentDatabase()
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // 显示查询结果
+                    displayQueryResults(result, resultsTable);
+                    showNotification('查询执行成功！', 'success');
+                } else {
+                    resultsTable.innerHTML = `
+                        <div class="error-message">
+                            <h4>查询执行失败</h4>
+                            <p>${result.error}</p>
+                        </div>
+                    `;
+                    showNotification(`查询执行失败: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                console.error('执行查询错误:', error);
+                resultsTable.innerHTML = `
+                    <div class="error-message">
+                        <h4>执行失败</h4>
+                        <p>网络错误或服务器异常</p>
+                    </div>
+                `;
+                showNotification('查询执行失败: 网络错误', 'error');
+            } finally {
+                // 恢复按钮状态
+                if (executeBtn) {
+                    executeBtn.disabled = false;
+                    executeBtn.textContent = '执行查询';
+                }
+            }
+        }
+        
+        // 清空SQL输入
+        function clearSQL() {
+            const resultsTable = document.getElementById('resultsTable');
+            
+            if (sqlEditor) {
+                sqlEditor.setValue('');
+                sqlEditor.focus();
+            }
+            
+            if (resultsTable) {
+                resultsTable.innerHTML = '<p>请输入SQL语句并点击"执行查询"查看结果</p>';
+            }
+        }
+        
+        // 监听数据库切换事件
+        document.addEventListener('databaseChanged', function(event) {
+            // 当数据库切换时，更新自动完成提示
+            if (sqlEditor) {
+                sqlEditor.setOption('hintOptions', {
+                    tables: getSQLHints()
+                });
+            }
+        });
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', async function() {
+            // 等待数据库结构加载完成
+            if (!databaseStructure) {
+                await loadDatabaseStructure();
+            }
+            
+            // 初始化 CodeMirror 编辑器
+            initCodeMirror();
+            // 执行按钮事件
+            const executeBtn = document.getElementById('executeBtn');
+            if (executeBtn) {
+                executeBtn.addEventListener('click', executeQuery);
+            }
+            
+            // 清空按钮事件
+            const clearBtn = document.getElementById('clearBtn');
+            if (clearBtn) {
+                clearBtn.addEventListener('click', clearSQL);
+            }
+            
+            // 清空SQL按钮事件（头部按钮）
+            const clearSQLBtn = document.getElementById('clearSQL');
+            if (clearSQLBtn) {
+                clearSQLBtn.addEventListener('click', clearSQL);
+            }
+            
+            // 执行SQL按钮事件（头部按钮）
+            const executeSQLBtn = document.getElementById('executeSQL');
+            if (executeSQLBtn) {
+                executeSQLBtn.addEventListener('click', executeQuery);
+            }
+            
+            // CodeMirror 已经通过 extraKeys 配置了 Ctrl+Enter 快捷键
+        });
+    </script>
+</body>
+</html>
+

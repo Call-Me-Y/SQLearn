@@ -1,0 +1,252 @@
+[
+    {
+      "id": 1,
+      "question": "按性别分组，统计男生和女生各自的人数。",
+      "sql": "SELECT Sex, COUNT(*) AS Count FROM S GROUP BY Sex;"
+    },
+    {
+      "id": 2,
+      "question": "按班级分组，统计每个班级的学生人数。",
+      "sql": "SELECT Class, COUNT(*) AS StudentCount FROM S GROUP BY Class;"
+    },
+    {
+      "id": 3,
+      "question": "按教师分组，统计每位教师教授的课程数量。",
+      "sql": "SELECT TN, COUNT(*) AS CourseCount FROM C GROUP BY TN;"
+    },
+    {
+      "id": 4,
+      "question": "按课程编号分组，统计每门课程的作业成绩记录数。",
+      "sql": "SELECT CNO, COUNT(*) AS RecordCount FROM Homework GROUP BY CNO;"
+    },
+    {
+      "id": 5,
+      "question": "按学生编号分组，统计每位学生的作业成绩记录数。",
+      "sql": "SELECT SNO, COUNT(*) AS RecordCount FROM Homework GROUP BY SNO;"
+    },
+    {
+      "id": 6,
+      "question": "按课程编号分组，计算每门课程作业1的平均成绩。",
+      "sql": "SELECT CNO, AVG(HW1) AS AvgHW1 FROM Homework GROUP BY CNO;"
+    },
+    {
+      "id": 7,
+      "question": "按学生编号分组，计算每位学生作业2的最高成绩。",
+      "sql": "SELECT SNO, MAX(HW2) AS MaxHW2 FROM Homework GROUP BY SNO;"
+    },
+    {
+      "id": 8,
+      "question": "查询平均学分大于3的教师。",
+      "sql": "SELECT TN FROM C GROUP BY TN HAVING AVG(CREDIT) > 3;"
+    },
+    {
+      "id": 9,
+      "question": "查询作业成绩记录数超过3条的学生编号。",
+      "sql": "SELECT SNO FROM Homework GROUP BY SNO HAVING COUNT(*) > 3;"
+    },
+    {
+      "id": 10,
+      "question": "查询作业1平均成绩大于75的课程编号。",
+      "sql": "SELECT CNO FROM Homework GROUP BY CNO HAVING AVG(HW1) > 75;"
+    },
+    {
+      "id": 11,
+      "question": "查询班级学生人数超过2人的班级。",
+      "sql": "SELECT Class FROM S GROUP BY Class HAVING COUNT(*) > 2;"
+    },
+    {
+      "id": 12,
+      "question": "查询学生信息及其作业成绩（使用学生表与作业成绩表的连接）。",
+      "sql": "SELECT S.*, H.* FROM S INNER JOIN Homework H ON S.SNo = H.SNO;"
+    },
+    {
+      "id": 13,
+      "question": "查询课程信息及其作业成绩（使用课程表与作业成绩表的连接）。",
+      "sql": "SELECT C.*, H.* FROM C INNER JOIN Homework H ON C.CNO = H.CNO;"
+    },
+    {
+      "id": 14,
+      "question": "查询学生姓名、课程名称和作业1成绩。",
+      "sql": "SELECT S.SN, C.CN, H.HW1 FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO;"
+    },
+    {
+      "id": 15,
+      "question": "查询学生姓名、课程名称、作业1、作业2和作业3成绩。",
+      "sql": "SELECT S.SN, C.CN, H.HW1, H.HW2, H.HW3 FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO;"
+    },
+    {
+      "id": 16,
+      "question": "查询姓名为'张艳'的学生的选课及成绩情况。",
+      "sql": "SELECT C.CN, H.HW1, H.HW2, H.HW3 FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO WHERE S.SN = '张艳';"
+    },
+    {
+      "id": 17,
+      "question": "查询课程名为'计算机图形学'的所有学生的成绩。",
+      "sql": "SELECT S.SN, H.HW1, H.HW2, H.HW3 FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO WHERE C.CN = '计算机图形学';"
+    },
+    {
+      "id": 18,
+      "question": "查询教师为'任泉'所授课程的学生成绩。",
+      "sql": "SELECT S.SN, C.CN, H.HW1, H.HW2, H.HW3 FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO WHERE C.TN = '任泉';"
+    },
+    {
+      "id": 19,
+      "question": "查询班级为'电子05'的学生的作业成绩。",
+      "sql": "SELECT C.CN, H.HW1, H.HW2, H.HW3 FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO WHERE S.Class = '电子05';"
+    },
+    {
+      "id": 20,
+      "question": "查询作业1成绩大于80分的学生姓名和课程名称。",
+      "sql": "SELECT S.SN, C.CN FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO WHERE H.HW1 > 80;"
+    },
+    {
+      "id": 21,
+      "question": "查询作业总平均分（(HW1+HW2+HW3)/3）大于80的学生姓名和课程名称。",
+      "sql": "SELECT S.SN, C.CN FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO WHERE (H.HW1 + H.HW2 + H.HW3)/3.0 > 80;"
+    },
+    {
+      "id": 22,
+      "question": "查询每位学生的选课数量。",
+      "sql": "SELECT S.SNo, S.SN, COUNT(H.CNO) AS CourseCount FROM S LEFT JOIN Homework H ON S.SNo = H.SNO GROUP BY S.SNo, S.SN;"
+    },
+    {
+      "id": 23,
+      "question": "查询每门课程的选修学生数量。",
+      "sql": "SELECT C.CNO, C.CN, COUNT(H.SNO) AS StudentCount FROM C LEFT JOIN Homework H ON C.CNO = H.CNO GROUP BY C.CNO, C.CN;"
+    },
+    {
+      "id": 24,
+      "question": "查询每位学生各门课程作业1的平均成绩。",
+      "sql": "SELECT S.SNo, S.SN, AVG(H.HW1) AS AvgHW1 FROM S LEFT JOIN Homework H ON S.SNo = H.SNO GROUP BY S.SNo, S.SN;"
+    },
+    {
+      "id": 25,
+      "question": "查询每门课程作业2成绩的最高分和最低分。",
+      "sql": "SELECT C.CNO, C.CN, MAX(H.HW2) AS MaxHW2, MIN(H.HW2) AS MinHW2 FROM C LEFT JOIN Homework H ON C.CNO = H.CNO GROUP BY C.CNO, C.CN;"
+    },
+    {
+      "id": 26,
+      "question": "查询没有选修任何课程的学生信息。",
+      "sql": "SELECT S.* FROM S LEFT JOIN Homework H ON S.SNo = H.SNO WHERE H.SNO IS NULL;"
+    },
+    {
+      "id": 27,
+      "question": "查询没有被任何学生选修的课程信息。",
+      "sql": "SELECT C.* FROM C LEFT JOIN Homework H ON C.CNO = H.CNO WHERE H.CNO IS NULL;"
+    },
+    {
+      "id": 28,
+      "question": "查询所有学生的信息，以及他们可能存在的选课记录（使用左连接）。",
+      "sql": "SELECT S.*, H.CNO, H.HW1, H.HW2, H.HW3 FROM S LEFT JOIN Homework H ON S.SNo = H.SNO;"
+    },
+    {
+      "id": 29,
+      "question": "查询所有课程的信息，以及可能存在的学生选课记录（使用左连接）。",
+      "sql": "SELECT C.*, H.SNO FROM C LEFT JOIN Homework H ON C.CNO = H.CNO;"
+    },
+    {
+      "id": 30,
+      "question": "查询学生信息、课程信息及作业成绩的完整列表（三表内连接）。",
+      "sql": "SELECT S.*, C.*, H.HW1, H.HW2, H.HW3 FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO;"
+    },
+    {
+      "id": 31,
+      "question": "查询学生姓名、课程名称，并按学生姓名升序、课程名称升序排序。",
+      "sql": "SELECT S.SN, C.CN FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO ORDER BY S.SN, C.CN;"
+    },
+    {
+      "id": 32,
+      "question": "查询选修了'K001'课程且作业1成绩最高的学生信息。",
+      "sql": "SELECT S.* FROM S INNER JOIN Homework H ON S.SNo = H.SNO WHERE H.CNO = 'K001' ORDER BY H.HW1 DESC LIMIT 1;"
+    },
+    {
+      "id": 33,
+      "question": "查询作业1、作业2、作业3成绩都大于等于80分的学生姓名和课程名称。",
+      "sql": "SELECT S.SN, C.CN FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO WHERE H.HW1 >= 80 AND H.HW2 >= 80 AND H.HW3 >= 80;"
+    },
+    {
+      "id": 34,
+      "question": "查询每个班级男女生各有多少人。",
+      "sql": "SELECT Class, Sex, COUNT(*) AS Count FROM S GROUP BY Class, Sex;"
+    },
+    {
+      "id": 35,
+      "question": "查询每位教师所授课程的总学时。",
+      "sql": "SELECT TN, SUM(CT) AS TotalCT FROM C GROUP BY TN;"
+    },
+    {
+      "id": 36,
+      "question": "查询每位学生选修课程的总学分（需要连接课程表获取学分）。",
+      "sql": "SELECT S.SNo, S.SN, SUM(C.CREDIT) AS TotalCredit FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO GROUP BY S.SNo, S.SN;"
+    },
+    {
+      "id": 37,
+      "question": "查询选修课程总学分超过8分的学生编号和姓名。",
+      "sql": "SELECT S.SNo, S.SN FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO GROUP BY S.SNo, S.SN HAVING SUM(C.CREDIT) > 8;"
+    },
+    {
+      "id": 38,
+      "question": "查询作业平均分（(HW1+HW2+HW3)/3）最高的前3条记录的学生姓名和课程名称。",
+      "sql": "SELECT S.SN, C.CN, (H.HW1 + H.HW2 + H.HW3)/3.0 AS AvgScore FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO ORDER BY AvgScore DESC LIMIT 3;"
+    },
+    {
+      "id": 39,
+      "question": "查询学生姓名、课程名称及作业成绩，并只显示作业成绩有至少一个为空值的记录。",
+      "sql": "SELECT S.SN, C.CN, H.HW1, H.HW2, H.HW3 FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO WHERE H.HW1 IS NULL OR H.HW2 IS NULL OR H.HW3 IS NULL;"
+    },
+    {
+      "id": 40,
+      "question": "查询学生信息，并计算他们的年龄（根据出生日期，近似到年）。",
+      "sql": "SELECT S.*, (YEAR(CURDATE()) - YEAR(Birth)) AS ApproxAge FROM S;"
+    },
+    {
+      "id": 41,
+      "question": "查询课程信息，并显示课程学时是学分的多少倍。",
+      "sql": "SELECT C.*, (CT / CREDIT) AS CT_Per_Credit FROM C WHERE CREDIT <> 0;"
+    },
+    {
+      "id": 42,
+      "question": "查询所有学生和所有课程的笛卡尔积（交叉连接）。",
+      "sql": "SELECT S.SN, C.CN FROM S CROSS JOIN C;"
+    },
+    {
+      "id": 43,
+      "question": "查询每个学生作业1成绩与作业2成绩的差值。",
+      "sql": "SELECT S.SN, C.CN, (H.HW1 - H.HW2) AS HW1_Minus_HW2 FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO;"
+    },
+    {
+      "id": 44,
+      "question": "查询作业成绩有重复的记录（同一学生同一课程有多次记录）。",
+      "sql": "SELECT SNO, CNO, COUNT(*) AS DuplicateCount FROM Homework GROUP BY SNO, CNO HAVING COUNT(*) > 1;"
+    },
+    {
+      "id": 45,
+      "question": "查询'生物05'班学生的作业成绩，并按课程编号和作业1成绩排序。",
+      "sql": "SELECT S.SN, C.CN, H.* FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO WHERE S.Class = '生物05' ORDER BY H.CNO, H.HW1;"
+    },
+    {
+      "id": 46,
+      "question": "查询学生姓名、课程名称以及作业成绩，并过滤出课程名称包含'经济'的记录。",
+      "sql": "SELECT S.SN, C.CN, H.HW1, H.HW2, H.HW3 FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO WHERE C.CN LIKE '%经济%';"
+    },
+    {
+      "id": 47,
+      "question": "查询学生姓名、课程名称以及作业成绩，并过滤出学生姓名以'王'开头的记录。",
+      "sql": "SELECT S.SN, C.CN, H.HW1, H.HW2, H.HW3 FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO WHERE S.SN LIKE '王%';"
+    },
+    {
+      "id": 48,
+      "question": "查询课程名称、学分以及该课程作业1的平均分，并按平均分降序排列。",
+      "sql": "SELECT C.CN, C.CREDIT, AVG(H.HW1) AS AvgHW1 FROM C LEFT JOIN Homework H ON C.CNO = H.CNO GROUP BY C.CNO, C.CN, C.CREDIT ORDER BY AvgHW1 DESC;"
+    },
+    {
+      "id": 49,
+      "question": "查询每个学生选修课程的数量，以及他们的作业1平均分。",
+      "sql": "SELECT S.SNo, S.SN, COUNT(H.CNO) AS CourseCount, AVG(H.HW1) AS AvgHW1 FROM S LEFT JOIN Homework H ON S.SNo = H.SNO GROUP BY S.SNo, S.SN;"
+    },
+    {
+      "id": 50,
+      "question": "查询存在作业成绩不及格（成绩<60）的学生姓名和课程名称。",
+      "sql": "SELECT S.SN, C.CN FROM Homework H INNER JOIN S ON H.SNO = S.SNo INNER JOIN C ON H.CNO = C.CNO WHERE H.HW1 < 60 OR H.HW2 < 60 OR H.HW3 < 60;"
+    }
+  ]

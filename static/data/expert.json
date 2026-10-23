@@ -1,0 +1,502 @@
+[
+    {
+      "id": 1,
+      "question": "查询所有学生的学号、姓名、性别、年龄和院系信息。",
+      "sql": "SELECT SNo, SN, Sex, Age, Dept FROM S;"
+    },
+    {
+      "id": 2,
+      "question": "查询所有课程编号、课程名称和学时。",
+      "sql": "SELECT CNO, CN, CT FROM C;"
+    },
+    {
+      "id": 3,
+      "question": "查询所有成绩记录，包括学号、课程编号和成绩。",
+      "sql": "SELECT SNo, CNO, Score FROM SC;"
+    },
+    {
+      "id": 4,
+      "question": "查询所有教师的工号、姓名、职称和所在院系。",
+      "sql": "SELECT TNO, TN, Prof, Dept FROM T;"
+    },
+    {
+      "id": 5,
+      "question": "查询所有教师授课关系，包括教师编号和课程编号。",
+      "sql": "SELECT TNO, CNO FROM TC;"
+    },
+    {
+      "id": 6,
+      "question": "查询所有学生的姓名和年龄，按年龄降序排列。",
+      "sql": "SELECT SN, Age FROM S ORDER BY Age DESC;"
+    },
+    {
+      "id": 7,
+      "question": "查询年龄在18到20岁之间的学生信息。",
+      "sql": "SELECT * FROM S WHERE Age BETWEEN 18 AND 20;"
+    },
+    {
+      "id": 8,
+      "question": "查询姓“赵”的学生信息。",
+      "sql": "SELECT * FROM S WHERE SN LIKE '赵%';"
+    },
+    {
+      "id": 9,
+      "question": "查询所有课程中学时大于70的课程信息。",
+      "sql": "SELECT * FROM C WHERE CT > 70;"
+    },
+    {
+      "id": 10,
+      "question": "查询成绩在80分以上的成绩记录。",
+      "sql": "SELECT * FROM SC WHERE Score > 80;"
+    },
+    {
+      "id": 11,
+      "question": "查询每个学生的选课数量。",
+      "sql": "SELECT SNo, COUNT(CNO) AS CourseCount FROM SC GROUP BY SNo;"
+    },
+    {
+      "id": 12,
+      "question": "查询每个学生的总成绩。",
+      "sql": "SELECT SNo, SUM(Score) AS TotalScore FROM SC GROUP BY SNo;"
+    },
+    {
+      "id": 13,
+      "question": "查询每个学生的平均成绩。",
+      "sql": "SELECT SNo, AVG(Score) AS AvgScore FROM SC GROUP BY SNo;"
+    },
+    {
+      "id": 14,
+      "question": "查询平均成绩大于75分的学生学号和平均成绩。",
+      "sql": "SELECT SNo, AVG(Score) AS AvgScore FROM SC GROUP BY SNo HAVING AVG(Score) > 75;"
+    },
+    {
+      "id": 15,
+      "question": "查询没有成绩记录的学生信息。",
+      "sql": "SELECT * FROM S WHERE SNo NOT IN (SELECT DISTINCT SNo FROM SC);"
+    },
+    {
+      "id": 16,
+      "question": "查询选修了课程但成绩为NULL的学生和课程。",
+      "sql": "SELECT SNo, CNO FROM SC WHERE Score IS NULL;"
+    },
+    {
+      "id": 17,
+      "question": "查询每个院系的学生人数。",
+      "sql": "SELECT Dept, COUNT(*) AS StudentCount FROM S GROUP BY Dept;"
+    },
+    {
+      "id": 18,
+      "question": "查询每个院系的平均年龄。",
+      "sql": "SELECT Dept, AVG(Age) AS AvgAge FROM S GROUP BY Dept;"
+    },
+    {
+      "id": 19,
+      "question": "查询选修了课程C1的学生姓名和成绩。",
+      "sql": "SELECT S.SN, SC.Score FROM S JOIN SC ON S.SNo = SC.SNo WHERE SC.CNO = 'C1';"
+    },
+    {
+      "id": 20,
+      "question": "查询选修了“数据库”课程的学生姓名和成绩。",
+      "sql": "SELECT S.SN, SC.Score FROM S JOIN SC ON S.SNo = SC.SNo JOIN C ON SC.CNO = C.CNO WHERE C.CN = '数据库';"
+    },
+    {
+      "id": 21,
+      "question": "查询所有学生的选课情况，包括学生姓名、课程名称和成绩。",
+      "sql": "SELECT S.SN, C.CN, SC.Score FROM S JOIN SC ON S.SNo = SC.SNo JOIN C ON SC.CNO = C.CNO;"
+    },
+    {
+      "id": 22,
+      "question": "查询每个学生选修课程的最高分和最低分。",
+      "sql": "SELECT SNo, MAX(Score) AS MaxScore, MIN(Score) AS MinScore FROM SC GROUP BY SNo;"
+    },
+    {
+      "id": 23,
+      "question": "查询每门课程的选修人数。",
+      "sql": "SELECT CNO, COUNT(SNo) AS StudentCount FROM SC GROUP BY CNO;"
+    },
+    {
+      "id": 24,
+      "question": "查询选修人数超过2人的课程编号。",
+      "sql": "SELECT CNO FROM SC GROUP BY CNO HAVING COUNT(SNo) > 2;"
+    },
+    {
+      "id": 25,
+      "question": "查询没有选修任何课程的学生姓名。",
+      "sql": "SELECT SN FROM S WHERE SNo NOT IN (SELECT DISTINCT SNo FROM SC);"
+    },
+    {
+      "id": 26,
+      "question": "查询所有课程都被选修的学生学号。",
+      "sql": "SELECT SNo FROM SC GROUP BY SNo HAVING COUNT(DISTINCT CNO) = (SELECT COUNT(*) FROM C);"
+    },
+    {
+      "id": 27,
+      "question": "查询选修了所有课程的学生姓名。",
+      "sql": "SELECT SN FROM S WHERE SNo IN (SELECT SNo FROM SC GROUP BY SNo HAVING COUNT(DISTINCT CNO) = (SELECT COUNT(*) FROM C));"
+    },
+    {
+      "id": 28,
+      "question": "查询每个学生选修课程的数量，并按数量降序排列。",
+      "sql": "SELECT SNo, COUNT(CNO) AS CourseCount FROM SC GROUP BY SNo ORDER BY CourseCount DESC;"
+    },
+    {
+      "id": 29,
+      "question": "查询成绩高于该课程平均分的学生成绩记录。",
+      "sql": "SELECT SC.* FROM SC JOIN (SELECT CNO, AVG(Score) AS AvgScore FROM SC GROUP BY CNO) AS AvgTable ON SC.CNO = AvgTable.CNO WHERE SC.Score > AvgTable.AvgScore;"
+    },
+    {
+      "id": 30,
+      "question": "查询每个学生成绩最高的课程名称和分数。",
+      "sql": "SELECT S.SN, C.CN, SC.Score FROM SC JOIN S ON SC.SNo = S.SNo JOIN C ON SC.CNO = C.CNO WHERE (SC.SNo, SC.Score) IN (SELECT SNo, MAX(Score) FROM SC GROUP BY SNo);"
+    },
+    {
+      "id": 31,
+      "question": "查询每个课程成绩最高的学生姓名和分数。",
+      "sql": "SELECT C.CN, S.SN, SC.Score FROM SC JOIN S ON SC.SNo = S.SNo JOIN C ON SC.CNO = C.CNO WHERE (SC.CNO, SC.Score) IN (SELECT CNO, MAX(Score) FROM SC GROUP BY CNO);"
+    },
+    {
+      "id": 32,
+      "question": "查询每个学生成绩比平均分高的课程数量。",
+      "sql": "SELECT SNo, COUNT(*) AS CountAboveAvg FROM SC WHERE Score > (SELECT AVG(Score) FROM SC) GROUP BY SNo;"
+    },
+    {
+      "id": 33,
+      "question": "查询每个院系成绩超过80分的学生人数。",
+      "sql": "SELECT S.Dept, COUNT(DISTINCT SC.SNo) AS Count FROM SC JOIN S ON SC.SNo = S.SNo WHERE SC.Score > 80 GROUP BY S.Dept;"
+    },
+    {
+      "id": 34,
+      "question": "查询没有不及格成绩的学生姓名。",
+      "sql": "SELECT SN FROM S WHERE SNo NOT IN (SELECT DISTINCT SNo FROM SC WHERE Score < 60);"
+    },
+    {
+      "id": 35,
+      "question": "查询有两门以上课程不及格的学生学号。",
+      "sql": "SELECT SNo FROM SC WHERE Score < 60 GROUP BY SNo HAVING COUNT(*) > 2;"
+    },
+    {
+      "id": 36,
+      "question": "查询每个课程的平均成绩，并按平均成绩降序排列。",
+      "sql": "SELECT CNO, AVG(Score) AS AvgScore FROM SC GROUP BY CNO ORDER BY AvgScore DESC;"
+    },
+    {
+      "id": 37,
+      "question": "查询平均成绩最高的课程名称。",
+      "sql": "SELECT C.CN FROM C JOIN (SELECT CNO, AVG(Score) AS AvgScore FROM SC GROUP BY CNO ORDER BY AvgScore DESC LIMIT 1) AS T ON C.CNO = T.CNO;"
+    },
+    {
+      "id": 38,
+      "question": "查询每个学生成绩的排名（按总分排名）。",
+      "sql": "SELECT SNo, SUM(Score) AS TotalScore, RANK() OVER (ORDER BY SUM(Score) DESC) AS Rank FROM SC GROUP BY SNo;"
+    },
+    {
+      "id": 39,
+      "question": "查询每个课程成绩的排名（按平均分排名）。",
+      "sql": "SELECT CNO, AVG(Score) AS AvgScore, RANK() OVER (ORDER BY AVG(Score) DESC) AS Rank FROM SC GROUP BY CNO;"
+    },
+    {
+      "id": 40,
+      "question": "查询每个学生每门课程的成绩排名（按课程内排名）。",
+      "sql": "SELECT SNo, CNO, Score, RANK() OVER (PARTITION BY CNO ORDER BY Score DESC) AS RankInCourse FROM SC;"
+    },
+    {
+      "id": 41,
+      "question": "查询每个学生成绩的前两名课程。",
+      "sql": "SELECT * FROM (SELECT SNo, CNO, Score, ROW_NUMBER() OVER (PARTITION BY SNo ORDER BY Score DESC) AS Rank FROM SC) AS T WHERE Rank <= 2;"
+    },
+    {
+      "id": 42,
+      "question": "查询每个课程成绩的前两名学生。",
+      "sql": "SELECT * FROM (SELECT SNo, CNO, Score, ROW_NUMBER() OVER (PARTITION BY CNO ORDER BY Score DESC) AS Rank FROM SC) AS T WHERE Rank <= 2;"
+    },
+    {
+      "id": 43,
+      "question": "查询每个学生成绩的累计百分比。",
+      "sql": "SELECT SNo, CNO, Score, PERCENT_RANK() OVER (PARTITION BY SNo ORDER BY Score) AS PercentRank FROM SC;"
+    },
+    {
+      "id": 44,
+      "question": "查询每个课程成绩的分数段分布（如90-100人数等）。",
+      "sql": "SELECT CNO, SUM(CASE WHEN Score BETWEEN 90 AND 100 THEN 1 ELSE 0 END) AS '90-100', SUM(CASE WHEN Score BETWEEN 80 AND 89 THEN 1 ELSE 0 END) AS '80-89', SUM(CASE WHEN Score BETWEEN 70 AND 79 THEN 1 ELSE 0 END) AS '70-79', SUM(CASE WHEN Score < 70 THEN 1 ELSE 0 END) AS '<70' FROM SC GROUP BY CNO;"
+    },
+    {
+      "id": 45,
+      "question": "查询每个学生成绩的标准差。",
+      "sql": "SELECT SNo, STDEV(Score) AS StdDev FROM SC GROUP BY SNo;"
+    },
+    {
+      "id": 46,
+      "question": "查询每个课程成绩的方差。",
+      "sql": "SELECT CNO, VAR(Score) AS Variance FROM SC GROUP BY CNO;"
+    },
+    {
+      "id": 47,
+      "question": "查询每个学生成绩的移动平均（窗口大小为3）。",
+      "sql": "SELECT SNo, CNO, Score, AVG(Score) OVER (PARTITION BY SNo ORDER BY CNO ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING) AS MovingAvg FROM SC;"
+    },
+    {
+      "id": 48,
+      "question": "查询每个学生成绩与课程平均分的差值。",
+      "sql": "SELECT SC.SNo, SC.CNO, SC.Score, (SC.Score - AvgTable.AvgScore) AS DiffFromAvg FROM SC JOIN (SELECT CNO, AVG(Score) AS AvgScore FROM SC GROUP BY CNO) AS AvgTable ON SC.CNO = AvgTable.CNO;"
+    },
+    {
+      "id": 49,
+      "question": "查询每个学生成绩的Z-Score。",
+      "sql": "SELECT SNo, CNO, Score, (Score - AVG(Score) OVER (PARTITION BY CNO)) / STDEV(Score) OVER (PARTITION BY CNO) AS ZScore FROM SC;"
+    },
+    {
+      "id": 50,
+      "question": "查询每个课程成绩的百分位数。",
+      "sql": "SELECT CNO, Score, PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY Score) OVER (PARTITION BY CNO) AS Median FROM SC;"
+    },
+    {
+      "id": 51,
+      "question": "查询每个学生成绩的累计总和。",
+      "sql": "SELECT SNo, CNO, Score, SUM(Score) OVER (PARTITION BY SNo ORDER BY CNO) AS CumulativeSum FROM SC;"
+    },
+    {
+      "id": 52,
+      "question": "查询每个课程成绩的累计计数。",
+      "sql": "SELECT CNO, Score, COUNT(*) OVER (PARTITION BY CNO ORDER BY Score) AS CumulativeCount FROM SC;"
+    },
+    {
+      "id": 53,
+      "question": "查询每个学生成绩的Lag（前一个成绩）和Lead（后一个成绩）。",
+      "sql": "SELECT SNo, CNO, Score, LAG(Score) OVER (PARTITION BY SNo ORDER BY CNO) AS PrevScore, LEAD(Score) OVER (PARTITION BY SNo ORDER BY CNO) AS NextScore FROM SC;"
+    },
+    {
+      "id": 54,
+      "question": "查询每个课程成绩的第一个和最后一个成绩。",
+      "sql": "SELECT CNO, FIRST_VALUE(Score) OVER (PARTITION BY CNO ORDER BY SNo) AS FirstScore, LAST_VALUE(Score) OVER (PARTITION BY CNO ORDER BY SNo ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS LastScore FROM SC;"
+    },
+    {
+      "id": 55,
+      "question": "查询每个学生成绩的Ntile（4分位）。",
+      "sql": "SELECT SNo, CNO, Score, NTILE(4) OVER (PARTITION BY SNo ORDER BY Score) AS Quartile FROM SC;"
+    },
+    {
+      "id": 56,
+      "question": "查询每个课程成绩的Ntile（10分位）。",
+      "sql": "SELECT CNO, Score, NTILE(10) OVER (PARTITION BY CNO ORDER BY Score) AS Decile FROM SC;"
+    },
+    {
+      "id": 57,
+      "question": "查询每个学生成绩的密集排名（Dense Rank）。",
+      "sql": "SELECT SNo, CNO, Score, DENSE_RANK() OVER (PARTITION BY SNo ORDER BY Score DESC) AS DenseRank FROM SC;"
+    },
+    {
+      "id": 58,
+      "question": "查询每个课程成绩的百分比排名。",
+      "sql": "SELECT CNO, Score, PERCENT_RANK() OVER (PARTITION BY CNO ORDER BY Score) AS PercentRank FROM SC;"
+    },
+    {
+      "id": 59,
+      "question": "查询每个学生成绩的累计分布。",
+      "sql": "SELECT SNo, CNO, Score, CUME_DIST() OVER (PARTITION BY SNo ORDER BY Score) AS CumeDist FROM SC;"
+    },
+    {
+      "id": 60,
+      "question": "查询每个课程成绩的累计分布。",
+      "sql": "SELECT CNO, Score, CUME_DIST() OVER (PARTITION BY CNO ORDER BY Score) AS CumeDist FROM SC;"
+    },
+    {
+      "id": 61,
+      "question": "查询每个学生成绩的Lag差值。",
+      "sql": "SELECT SNo, CNO, Score, Score - LAG(Score) OVER (PARTITION BY SNo ORDER BY CNO) AS LagDiff FROM SC;"
+    },
+    {
+      "id": 62,
+      "question": "查询每个课程成绩的Lead差值。",
+      "sql": "SELECT CNO, Score, LEAD(Score) OVER (PARTITION BY CNO ORDER BY SNo) - Score AS LeadDiff FROM SC;"
+    },
+    {
+      "id": 63,
+      "question": "查询每个学生成绩的移动标准差。",
+      "sql": "SELECT SNo, CNO, Score, STDEV(Score) OVER (PARTITION BY SNo ORDER BY CNO ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING) AS MovingStdDev FROM SC;"
+    },
+    {
+      "id": 64,
+      "question": "查询每个课程成绩的移动方差。",
+      "sql": "SELECT CNO, Score, VAR(Score) OVER (PARTITION BY CNO ORDER BY SNo ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING) AS MovingVar FROM SC;"
+    },
+    {
+      "id": 65,
+      "question": "查询每个学生成绩的指数加权移动平均。",
+      "sql": "SELECT SNo, CNO, Score, AVG(Score) OVER (PARTITION BY SNo ORDER BY CNO ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS ExpWeightedAvg FROM SC;"
+    },
+    {
+      "id": 66,
+      "question": "查询每个课程成绩的指数加权移动平均。",
+      "sql": "SELECT CNO, Score, AVG(Score) OVER (PARTITION BY CNO ORDER BY SNo ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS ExpWeightedAvg FROM SC;"
+    },
+    {
+      "id": 67,
+      "question": "查询每个学生成绩的排名变化（与上一课程比较）。",
+      "sql": "SELECT SNo, CNO, Score, RANK() OVER (PARTITION BY SNo ORDER BY Score) - RANK() OVER (PARTITION BY SNo ORDER BY CNO) AS RankChange FROM SC;"
+    },
+    {
+      "id": 68,
+      "question": "查询每个课程成绩的排名变化（与上一学生比较）。",
+      "sql": "SELECT CNO, SNo, Score, RANK() OVER (PARTITION BY CNO ORDER BY Score) - RANK() OVER (PARTITION BY CNO ORDER BY SNo) AS RankChange FROM SC;"
+    },
+    {
+      "id": 69,
+      "question": "查询每个学生成绩的累计平均值。",
+      "sql": "SELECT SNo, CNO, Score, AVG(Score) OVER (PARTITION BY SNo ORDER BY CNO ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS CumulativeAvg FROM SC;"
+    },
+    {
+      "id": 70,
+      "question": "查询每个课程成绩的累计平均值。",
+      "sql": "SELECT CNO, SNo, Score, AVG(Score) OVER (PARTITION BY CNO ORDER BY SNo ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS CumulativeAvg FROM SC;"
+    },
+    {
+      "id": 71,
+      "question": "查询每个学生成绩的累计最大值。",
+      "sql": "SELECT SNo, CNO, Score, MAX(Score) OVER (PARTITION BY SNo ORDER BY CNO ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS CumulativeMax FROM SC;"
+    },
+    {
+      "id": 72,
+      "question": "查询每个课程成绩的累计最小值。",
+      "sql": "SELECT CNO, SNo, Score, MIN(Score) OVER (PARTITION BY CNO ORDER BY SNo ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS CumulativeMin FROM SC;"
+    },
+    {
+      "id": 73,
+      "question": "查询每个学生成绩的累计和百分比。",
+      "sql": "SELECT SNo, CNO, Score, SUM(Score) OVER (PARTITION BY SNo ORDER BY CNO) * 100.0 / SUM(Score) OVER (PARTITION BY SNo) AS CumulativeSumPct FROM SC;"
+    },
+    {
+      "id": 74,
+      "question": "查询每个课程成绩的累计和百分比。",
+      "sql": "SELECT CNO, SNo, Score, SUM(Score) OVER (PARTITION BY CNO ORDER BY SNo) * 100.0 / SUM(Score) OVER (PARTITION BY CNO) AS CumulativeSumPct FROM SC;"
+    },
+    {
+      "id": 75,
+      "question": "查询每个学生成绩的Lag百分比变化。",
+      "sql": "SELECT SNo, CNO, Score, (Score - LAG(Score) OVER (PARTITION BY SNo ORDER BY CNO)) * 100.0 / LAG(Score) OVER (PARTITION BY SNo ORDER BY CNO) AS LagPctChange FROM SC;"
+    },
+    {
+      "id": 76,
+      "question": "查询每个课程成绩的Lead百分比变化。",
+      "sql": "SELECT CNO, SNo, Score, (LEAD(Score) OVER (PARTITION BY CNO ORDER BY SNo) - Score) * 100.0 / Score AS LeadPctChange FROM SC;"
+    },
+    {
+      "id": 77,
+      "question": "查询每个学生成绩的累计排名。",
+      "sql": "SELECT SNo, CNO, Score, RANK() OVER (PARTITION BY SNo ORDER BY Score DESC) AS CumulativeRank FROM SC;"
+    },
+    {
+      "id": 78,
+      "question": "查询每个课程成绩的累计排名。",
+      "sql": "SELECT CNO, SNo, Score, RANK() OVER (PARTITION BY CNO ORDER BY Score DESC) AS CumulativeRank FROM SC;"
+    },
+    {
+      "id": 79,
+      "question": "查询每个学生成绩的累计密集排名。",
+      "sql": "SELECT SNo, CNO, Score, DENSE_RANK() OVER (PARTITION BY SNo ORDER BY Score DESC) AS CumulativeDenseRank FROM SC;"
+    },
+    {
+      "id": 80,
+      "question": "查询每个课程成绩的累计密集排名。",
+      "sql": "SELECT CNO, SNo, Score, DENSE_RANK() OVER (PARTITION BY CNO ORDER BY Score DESC) AS CumulativeDenseRank FROM SC;"
+    },
+    {
+      "id": 81,
+      "question": "查询每个学生成绩的累计百分比排名。",
+      "sql": "SELECT SNo, CNO, Score, PERCENT_RANK() OVER (PARTITION BY SNo ORDER BY Score DESC) AS CumulativePercentRank FROM SC;"
+    },
+    {
+      "id": 82,
+      "question": "查询每个课程成绩的累计百分比排名。",
+      "sql": "SELECT CNO, SNo, Score, PERCENT_RANK() OVER (PARTITION BY CNO ORDER BY Score DESC) AS CumulativePercentRank FROM SC;"
+    },
+    {
+      "id": 83,
+      "question": "查询每个学生成绩的累计分布排名。",
+      "sql": "SELECT SNo, CNO, Score, CUME_DIST() OVER (PARTITION BY SNo ORDER BY Score DESC) AS CumulativeCumeDist FROM SC;"
+    },
+    {
+      "id": 84,
+      "question": "查询每个课程成绩的累计分布排名。",
+      "sql": "SELECT CNO, SNo, Score, CUME_DIST() OVER (PARTITION BY CNO ORDER BY Score DESC) AS CumulativeCumeDist FROM SC;"
+    },
+    {
+      "id": 85,
+      "question": "查询每个学生成绩的Ntile排名（5分位）。",
+      "sql": "SELECT SNo, CNO, Score, NTILE(5) OVER (PARTITION BY SNo ORDER BY Score DESC) AS CumulativeNtile FROM SC;"
+    },
+    {
+      "id": 86,
+      "question": "查询每个课程成绩的Ntile排名（5分位）。",
+      "sql": "SELECT CNO, SNo, Score, NTILE(5) OVER (PARTITION BY CNO ORDER BY Score DESC) AS CumulativeNtile FROM SC;"
+    },
+    {
+      "id": 87,
+      "question": "查询每个学生成绩的Lag排名变化。",
+      "sql": "SELECT SNo, CNO, Score, RANK() OVER (PARTITION BY SNo ORDER BY Score DESC) - LAG(RANK() OVER (PARTITION BY SNo ORDER BY Score DESC)) OVER (PARTITION BY SNo ORDER BY CNO) AS LagRankChange FROM SC;"
+    },
+    {
+      "id": 88,
+      "question": "查询每个课程成绩的Lead排名变化。",
+      "sql": "SELECT CNO, SNo, Score, LEAD(RANK() OVER (PARTITION BY CNO ORDER BY Score DESC)) OVER (PARTITION BY CNO ORDER BY SNo) - RANK() OVER (PARTITION BY CNO ORDER BY Score DESC) AS LeadRankChange FROM SC;"
+    },
+    {
+      "id": 89,
+      "question": "查询每个学生成绩的移动排名平均值。",
+      "sql": "SELECT SNo, CNO, Score, AVG(RANK() OVER (PARTITION BY SNo ORDER BY Score DESC)) OVER (PARTITION BY SNo ORDER BY CNO ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING) AS MovingRankAvg FROM SC;"
+    },
+    {
+      "id": 90,
+      "question": "查询每个课程成绩的移动排名平均值。",
+      "sql": "SELECT CNO, SNo, Score, AVG(RANK() OVER (PARTITION BY CNO ORDER BY Score DESC)) OVER (PARTITION BY CNO ORDER BY SNo ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING) AS MovingRankAvg FROM SC;"
+    },
+    {
+      "id": 91,
+      "question": "查询每个学生成绩的累计排名百分比。",
+      "sql": "SELECT SNo, CNO, Score, RANK() OVER (PARTITION BY SNo ORDER BY Score DESC) * 100.0 / COUNT(*) OVER (PARTITION BY SNo) AS RankPct FROM SC;"
+    },
+    {
+      "id": 92,
+      "question": "查询每个课程成绩的累计排名百分比。",
+      "sql": "SELECT CNO, SNo, Score, RANK() OVER (PARTITION BY CNO ORDER BY Score DESC) * 100.0 / COUNT(*) OVER (PARTITION BY CNO) AS RankPct FROM SC;"
+    },
+    {
+      "id": 93,
+      "question": "查询每个学生成绩的累计密集排名百分比。",
+      "sql": "SELECT SNo, CNO, Score, DENSE_RANK() OVER (PARTITION BY SNo ORDER BY Score DESC) * 100.0 / COUNT(DISTINCT Score) OVER (PARTITION BY SNo) AS DenseRankPct FROM SC;"
+    },
+    {
+      "id": 94,
+      "question": "查询每个课程成绩的累计密集排名百分比。",
+      "sql": "SELECT CNO, SNo, Score, DENSE_RANK() OVER (PARTITION BY CNO ORDER BY Score DESC) * 100.0 / COUNT(DISTINCT Score) OVER (PARTITION BY CNO) AS DenseRankPct FROM SC;"
+    },
+    {
+      "id": 95,
+      "question": "查询每个学生成绩的累计Ntile百分比。",
+      "sql": "SELECT SNo, CNO, Score, NTILE(4) OVER (PARTITION BY SNo ORDER BY Score DESC) * 25 AS NtilePct FROM SC;"
+    },
+    {
+      "id": 96,
+      "question": "查询每个课程成绩的累计Ntile百分比。",
+      "sql": "SELECT CNO, SNo, Score, NTILE(4) OVER (PARTITION BY CNO ORDER BY Score DESC) * 25 AS NtilePct FROM SC;"
+    },
+    {
+      "id": 97,
+      "question": "查询每个学生成绩的累计百分比排名变化。",
+      "sql": "SELECT SNo, CNO, Score, PERCENT_RANK() OVER (PARTITION BY SNo ORDER BY Score DESC) - LAG(PERCENT_RANK() OVER (PARTITION BY SNo ORDER BY Score DESC)) OVER (PARTITION BY SNo ORDER BY CNO) AS PercentRankChange FROM SC;"
+    },
+    {
+      "id": 98,
+      "question": "查询每个课程成绩的累计百分比排名变化。",
+      "sql": "SELECT CNO, SNo, Score, LEAD(PERCENT_RANK() OVER (PARTITION BY CNO ORDER BY Score DESC)) OVER (PARTITION BY CNO ORDER BY SNo) - PERCENT_RANK() OVER (PARTITION BY CNO ORDER BY Score DESC) AS PercentRankChange FROM SC;"
+    },
+    {
+      "id": 99,
+      "question": "查询每个学生成绩的累计分布排名变化。",
+      "sql": "SELECT SNo, CNO, Score, CUME_DIST() OVER (PARTITION BY SNo ORDER BY Score DESC) - LAG(CUME_DIST() OVER (PARTITION BY SNo ORDER BY Score DESC)) OVER (PARTITION BY SNo ORDER BY CNO) AS CumeDistChange FROM SC;"
+    },
+    {
+      "id": 100,
+      "question": "查询每个课程成绩的累计分布排名变化。",
+      "sql": "SELECT CNO, SNo, Score, LEAD(CUME_DIST() OVER (PARTITION BY CNO ORDER BY Score DESC)) OVER (PARTITION BY CNO ORDER BY SNo) - CUME_DIST() OVER (PARTITION BY CNO ORDER BY Score DESC) AS CumeDistChange FROM SC;"
+    }
+  ]

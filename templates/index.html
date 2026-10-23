@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQLearn：智能sql语句学习和挑战平台</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/sqlearn_no_bg.ico') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/sqlearn_no_bg.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="header">
+        <div class="nav-container">
+            <div class="logo" id="logo">SQLearn</div>
+            <div class="nav-links">
+                <a href="#" onclick="scrollToSection('hero')" class="nav-link active">首页</a>
+                <a href="#" onclick="scrollToSection('learn')" class="nav-link">学习模式</a>
+                <a href="#" onclick="scrollToSection('challenge')" class="nav-link">挑战模式</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 首页部分 -->
+    <section id="hero" class="section hero-section">
+        <div class="container">
+            <h1 class="main-title">🚀智能SQL语句学习与挑战平台</h1>
+            <p class="subtitle">本平台以教材数据库为基础，采用先进图搜索和语义分析技术，<br/>提供关系可视化，图形化界面编写sql语句，自然语言转sql语句，生成题目和批改等功能<br/>向下滑动进入轻松学习SQL语句吧</p>
+            
+            <div class="button-container">
+                <a href="#" onclick="scrollToSection('learn')" class="mode-button">📚学习模式</a>
+                <a href="#" onclick="scrollToSection('challenge')" class="mode-button">🎯挑战模式</a>
+            </div>
+        </div>
+        <div class="scroll-indicator">向下滚动查看更多</div>
+    </section>
+    
+    <!-- 学习模式部分 -->
+    <section id="learn" class="section learn-section">
+        <div class="container">
+            <h1 class="main-title">📚学习模式</h1>
+            <p class="subtitle">通过知识说明和图形化编写功能，轻松学习SQL查询语句</p>
+            <div class="features-grid">
+            <div class="feature-card" onclick="window.location.href='/text'">
+                <div class="feature-icon">💻</div>
+                <h3 class="feature-title">查询试验</h3>
+                <p class="feature-description">在知识提示的指导下手动编写并测试查询语句</p>
+            </div>
+            
+                <div class="feature-card" onclick="window.location.href='/visual-sql'">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-title">图形化编写</h3>
+                    <p class="feature-description">通过点击和少量输入的方式，直观地构建SQL查询语句</p>
+                </div>
+                
+
+
+                <div class="feature-card" onclick="window.location.href='/relationship-diagram'">
+                    <div class="feature-icon">🔍</div>
+                    <h3 class="feature-title">关系图谱</h3>
+                    <p class="feature-description">直观展示数据库中的关系结构，帮助你理解数据之间的关系</p>
+                </div>
+                
+            </div>
+            <p class="subtitle">从简单的SELECT语句开始，掌握基本查询操作。<br/>关系图谱展示数据库中的关系结构，也展示了本平台系统自动连接数据表的基本原理……</p>
+        </div>
+    </section>
+    
+    <!-- 挑战模式部分 -->
+    <section id="challenge" class="section challenge-section">
+        <div class="container">
+            <h1 class="main-title">🎯挑战模式</h1>
+            <p class="subtitle">智能生成题目，自动批改，让你在实战中提升SQL技能水平</p>
+            
+            <div class="challenge-grid">
+                <div class="challenge-card">
+                    <div class="difficulty-badge easy">答对数量: <span id="basic-completed">0</span></div>
+                    <div class="challenge-icon">🌱</div>
+                    <h3 class="challenge-title">基础查询挑战</h3>
+                    <p class="challenge-description">使用Study数据库，主要侧重于基础的单表查询操作</p>
+                    <div class="challenge-stats">
+                        <span>难度: 简单</span>
+                        <span>题库数量: 50题</span>
+                        <span>每题时间: 1分钟</span>
+                    </div>
+                    <button class="start-challenge" onclick="window.location.href='/basic-challenge'">开始挑战</button>
+                </div>
+                
+                <div class="challenge-card">
+                    <div class="difficulty-badge medium">答对数量: <span id="advanced-completed">0</span></div>
+                    <div class="challenge-icon">🔥</div>
+                    <h3 class="challenge-title">复杂查询挑战</h3>
+                    <p class="challenge-description">使用Study数据库，重点在于提升处理复杂查询和数据深度分析的能力，题目大量涉及多表连接​（INNER JOIN, LEFT JOIN）</p>
+                    <div class="challenge-stats">
+                        <span>难度: 中等</span>
+                        <span>题库数量: 50题</span>
+                        <span>每题时间: 30秒</span>
+                    </div>
+                    <button class="start-challenge" onclick="window.location.href='/advanced-challenge'">开始挑战</button>
+                </div>
+                
+                <div class="challenge-card">
+                    <div class="difficulty-badge hard">答对数量: <span id="expert-completed">0</span></div>
+                    <div class="challenge-icon">⚡</div>
+                    <h3 class="challenge-title">专家级挑战</h3>
+                    <p class="challenge-description">使用Teach数据库，涉及JOIN、子查询、聚合函数等高级SQL特性，掌握高级查询操作</p>
+                    <div class="challenge-stats">
+                        <span>难度: 困难</span>
+                        <span>题库数量: 100题</span>
+                        <span>每题时间: 30秒</span>
+                    </div>
+                    <button class="start-challenge" onclick="window.location.href='/expert-challenge'">开始挑战</button>
+                </div>
+                
+            </div>
+            <p class="subtitle">采用题库出题+数据库返回结果对比方式，一题多解，挑战结果储存在浏览器缓存中</p>
+        </div>
+    </section>
+
+    <!-- 数据库表格浮窗 -->
+    <div id="table-popup" class="table-popup">
+        <div class="popup-header">
+            <h3 id="popup-title">数据库表格</h3>
+            <button class="popup-close" onclick="closeTablePopup()">&times;</button>
+        </div>
+        <div class="popup-content">
+            <div id="popup-tables"></div>
+        </div>
+    </div>
+
+    <script>
+        // 数据库表格数据
+        let databaseData = null;
+        
+        // 加载数据库表格数据
+        async function loadDatabaseData() {
+            try {
+                const response = await fetch('/static/data/database_table.json');
+                databaseData = await response.json();
+            } catch (error) {
+                console.error('加载数据库数据失败:', error);
+            }
+        }
+        
+        // 显示表格浮窗
+        function showTablePopup(tableName) {
+            if (!databaseData) {
+                console.error('数据库数据未加载');
+                return;
+            }
+            
+            const popup = document.getElementById('table-popup');
+            const popupTitle = document.getElementById('popup-title');
+            const popupTables = document.getElementById('popup-tables');
+            
+            popupTitle.textContent = `${tableName} 表格数据`;
+            
+            // 根据数据库类型显示不同的表格
+            let tables = [];
+            if (databaseData.Study && databaseData.Study[tableName]) {
+                tables = databaseData.Study[tableName];
+            } else if (databaseData.Teach && databaseData.Teach[tableName]) {
+                tables = databaseData.Teach[tableName];
+            }
+            
+            if (tables.length === 0) {
+                popupTables.innerHTML = '<p>暂无数据</p>';
+            } else {
+                // 创建表格HTML
+                let tableHtml = '<div class="table-container">';
+                tableHtml += '<table class="data-table">';
+                
+                // 表头
+                if (tables.length > 0) {
+                    tableHtml += '<thead><tr>';
+                    Object.keys(tables[0]).forEach(key => {
+                        tableHtml += `<th>${key}</th>`;
+                    });
+                    tableHtml += '</tr></thead>';
+                }
+                
+                // 表体
+                tableHtml += '<tbody>';
+                tables.forEach(row => {
+                    tableHtml += '<tr>';
+                    Object.values(row).forEach(value => {
+                        const displayValue = value === null ? 'NULL' : value;
+                        tableHtml += `<td>${displayValue}</td>`;
+                    });
+                    tableHtml += '</tr>';
+                });
+                tableHtml += '</tbody>';
+                tableHtml += '</table>';
+                tableHtml += '</div>';
+                
+                popupTables.innerHTML = tableHtml;
+            }
+            
+            popup.style.display = 'block';
+            popup.style.opacity = '1';
+        }
+        
+        // 关闭表格浮窗
+        function closeTablePopup() {
+            const popup = document.getElementById('table-popup');
+            popup.style.opacity = '0';
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 300);
+        }
+        
+        // 平滑滚动到指定部分
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+        
+        // 监听滚动事件，更新导航栏状态和标题颜色
+        window.addEventListener('scroll', function() {
+            const sections = ['hero', 'learn', 'challenge'];
+            const navLinks = document.querySelectorAll('.nav-link');
+            const logo = document.getElementById('logo');
+            const scrollPosition = window.scrollY;
+            const windowHeight = window.innerHeight;
+            
+            // 更新导航栏激活状态
+            sections.forEach((sectionId, index) => {
+                const section = document.getElementById(sectionId);
+                const sectionTop = section.offsetTop - 100;
+                const sectionBottom = sectionTop + section.offsetHeight;
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    navLinks[index].classList.add('active');
+                    
+                    // 根据当前部分改变标题颜色
+                    switch(sectionId) {
+                        case 'hero':
+                            logo.style.color = '#667eea';
+                            break;
+                        case 'learn':
+                            logo.style.color = '#4facfe';
+                            break;
+                        case 'challenge':
+                            logo.style.color = '#ff6b6b';
+                            break;
+                    }
+                }
+            });
+            
+            // 添加滚动时的背景透明度效果
+            const header = document.querySelector('.header');
+            if (scrollPosition > 50) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.backdropFilter = 'blur(10px)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.backdropFilter = 'none';
+            }
+        });
+        
+        // 为导航按钮添加点击效果
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // 移除所有active类
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                
+                // 添加active类到当前点击的按钮
+                this.classList.add('active');
+                
+                // 根据按钮类型设置标题颜色并执行滚动
+                const logo = document.getElementById('logo');
+                if (this.onclick.toString().includes('hero')) {
+                    logo.style.color = '#667eea';
+                    scrollToSection('hero');
+                } else if (this.onclick.toString().includes('learn')) {
+                    logo.style.color = '#4facfe';
+                    scrollToSection('learn');
+                } else if (this.onclick.toString().includes('challenge')) {
+                    logo.style.color = '#ff6b6b';
+                    scrollToSection('challenge');
+                }
+            });
+        });
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置初始标题颜色
+            const logo = document.getElementById('logo');
+            logo.style.color = '#667eea';
+            
+            // 加载挑战进度
+            loadChallengeProgress();
+            
+            // 加载数据库数据
+            loadDatabaseData();
+        });
+        
+        // 加载挑战进度
+        function loadChallengeProgress() {
+            // 基础挑战进度
+            const basicCompleted = localStorage.getItem('basic_challenge_completed');
+            const basicCount = basicCompleted ? JSON.parse(basicCompleted).length : 0;
+            document.getElementById('basic-completed').textContent = basicCount;
+            
+            // 复杂挑战进度
+            const advancedCompleted = localStorage.getItem('advanced_challenge_completed');
+            const advancedCount = advancedCompleted ? JSON.parse(advancedCompleted).length : 0;
+            document.getElementById('advanced-completed').textContent = advancedCount;
+            
+            // 专家级挑战进度
+            const expertCompleted = localStorage.getItem('expert_challenge_completed');
+            const expertCount = expertCompleted ? JSON.parse(expertCompleted).length : 0;
+            document.getElementById('expert-completed').textContent = expertCount;
+        }
+    </script>
+</body>
+</html>

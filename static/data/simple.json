@@ -1,0 +1,252 @@
+[
+    {
+      "id": 1,
+      "question": "查询所有学生的信息。",
+      "sql": "SELECT * FROM S;"
+    },
+    {
+      "id": 2,
+      "question": "查询所有学生的姓名和班级。",
+      "sql": "SELECT SN, Class FROM S;"
+    },
+    {
+      "id": 3,
+      "question": "查询所有课程的信息。",
+      "sql": "SELECT * FROM C;"
+    },
+    {
+      "id": 4,
+      "question": "查询所有作业成绩记录。",
+      "sql": "SELECT * FROM Homework;"
+    },
+    {
+      "id": 5,
+      "question": "查询所有男生的信息。",
+      "sql": "SELECT * FROM S WHERE Sex = '男';"
+    },
+    {
+      "id": 6,
+      "question": "查询班级为'生物04'的学生信息。",
+      "sql": "SELECT * FROM S WHERE Class = '生物04';"
+    },
+    {
+      "id": 7,
+      "question": "查询课程名称为'数据结构'的课程信息。",
+      "sql": "SELECT  FROM C WHERE CN = '数据结构';"
+    },
+    {
+      "id": 8,
+      "question": "查询课程学分为3的课程信息。",
+      "sql": "SELECT * FROM C WHERE CREDIT = 3;"
+    },
+    {
+      "id": 9,
+      "question": "查询教师为'赵晓尘'的课程信息。",
+      "sql": "SELECT * FROM C WHERE TN = '赵晓尘';"
+    },
+    {
+      "id": 10,
+      "question": "查询学生编号为'0496'的学生的作业成绩。",
+      "sql": "SELECT * FROM Homework WHERE SNO = '0496';"
+    },
+    {
+      "id": 11,
+      "question": "查询课程编号为'K001'的作业成绩。",
+      "sql": "SELECT * FROM Homework WHERE CNO = 'K001';"
+    },
+    {
+      "id": 12,
+      "question": "查询作业1成绩大于70的记录。",
+      "sql": "SELECT * FROM Homework WHERE HW1 > 70;"
+    },
+    {
+      "id": 13,
+      "question": "查询作业2成绩等于80的记录。",
+      "sql": "SELECT * FROM Homework WHERE HW2 = 80;"
+    },
+    {
+      "id": 14,
+      "question": "查询作业3成绩小于60的记录。",
+      "sql": "SELECT * FROM Homework WHERE HW3 < 60;"
+    },
+    {
+      "id": 15,
+      "question": "查询电话为空的学生信息。",
+      "sql": "SELECT * FROM S WHERE Phone IS NULL;"
+    },
+    {
+      "id": 16,
+      "question": "查询所有学生信息，按学生姓名升序排序。",
+      "sql": "SELECT * FROM S ORDER BY SN;"
+    },
+    {
+      "id": 17,
+      "question": "查询所有课程信息，按课程学分降序排序。",
+      "sql": "SELECT * FROM C ORDER BY CREDIT DESC;"
+    },
+    {
+      "id": 18,
+      "question": "查询所有作业成绩，按课程编号升序、作业1成绩降序排序。",
+      "sql": "SELECT * FROM Homework ORDER BY CNO, HW1 DESC;"
+    },
+    {
+      "id": 19,
+      "question": "查询学生姓名包含'张'的学生信息。",
+      "sql": "SELECT * FROM S WHERE SN LIKE '%张%';"
+    },
+    {
+      "id": 20,
+      "question": "查询课程名称以'计算机'开头的课程信息。",
+      "sql": "SELECT * FROM C WHERE CN LIKE '计算机%';"
+    },
+    {
+      "id": 21,
+      "question": "查询课程编号以'K'开头的课程信息。",
+      "sql": "SELECT * FROM C WHERE CNO LIKE 'K%';"
+    },
+    {
+      "id": 22,
+      "question": "查询学生编号以'05'开头的学生信息。",
+      "sql": "SELECT * FROM S WHERE SNo LIKE '05%';"
+    },
+    {
+      "id": 23,
+      "question": "查询出生日期在1984年的学生信息。",
+      "sql": "SELECT * FROM S WHERE YEAR(Birth) = 1984;"
+    },
+    {
+      "id": 24,
+      "question": "查询出生日期在1986年之后的学生信息。",
+      "sql": "SELECT * FROM S WHERE YEAR(Birth) > 1986;"
+    },
+    {
+      "id": 25,
+      "question": "查询班级为'电子04'或'电子05'的学生信息。",
+      "sql": "SELECT * FROM S WHERE Class IN ('电子04', '电子05');"
+    },
+    {
+      "id": 26,
+      "question": "查询学分为3或4的课程信息。",
+      "sql": "SELECT * FROM C WHERE CREDIT IN (3, 4);"
+    },
+    {
+      "id": 27,
+      "question": "查询学时在48到64之间的课程信息（包含48和64）。",
+      "sql": "SELECT * FROM C WHERE CT BETWEEN 48 AND 64;"
+    },
+    {
+      "id": 28,
+      "question": "查询作业1成绩在60到80之间的记录（包含60和80）。",
+      "sql": "SELECT * FROM Homework WHERE HW1 BETWEEN 60 AND 80;"
+    },
+    {
+      "id": 29,
+      "question": "查询性别为女且班级为'生物05'的学生信息。",
+      "sql": "SELECT * FROM S WHERE Sex = '女' AND Class = '生物05';"
+    },
+    {
+      "id": 30,
+      "question": "查询学分数大于3且学时数大于50的课程信息。",
+      "sql": "SELECT * FROM C WHERE CREDIT > 3 AND CT > 50;"
+    },
+    {
+      "id": 31,
+      "question": "查询作业1成绩大于75或者作业2成绩大于75的记录。",
+      "sql": "SELECT * FROM Homework WHERE HW1 > 75 OR HW2 > 75;"
+    },
+    {
+      "id": 32,
+      "question": "查询班级不是'生物04'的学生信息。",
+      "sql": "SELECT * FROM S WHERE Class <> '生物04';"
+    },
+    {
+      "id": 33,
+      "question": "查询教师不为空的课程信息。",
+      "sql": "SELECT * FROM C WHERE TN IS NOT NULL;"
+    },
+    {
+      "id": 34,
+      "question": "查询作业3成绩为空的记录。",
+      "sql": "SELECT * FROM Homework WHERE HW3 IS NULL;"
+    },
+    {
+      "id": 35,
+      "question": "查询不同的班级列表。",
+      "sql": "SELECT DISTINCT Class FROM S;"
+    },
+    {
+      "id": 36,
+      "question": "查询不同的教师列表。",
+      "sql": "SELECT DISTINCT TN FROM C;"
+    },
+    {
+      "id": 37,
+      "question": "计算学生总人数。",
+      "sql": "SELECT COUNT(*) AS StudentCount FROM S;"
+    },
+    {
+      "id": 38,
+      "question": "计算课程总门数。",
+      "sql": "SELECT COUNT(*) AS CourseCount FROM C;"
+    },
+    {
+      "id": 39,
+      "question": "计算作业成绩记录的总条数。",
+      "sql": "SELECT COUNT(*) AS RecordCount FROM Homework;"
+    },
+    {
+      "id": 40,
+      "question": "计算男学生的人数。",
+      "sql": "SELECT COUNT(*) AS MaleCount FROM S WHERE Sex = '男';"
+    },
+    {
+      "id": 41,
+      "question": "计算课程的平均学分。",
+      "sql": "SELECT AVG(CREDIT) AS AvgCredit FROM C;"
+    },
+    {
+      "id": 42,
+      "question": "计算课程的平均学时。",
+      "sql": "SELECT AVG(CT) AS AvgCT FROM C;"
+    },
+    {
+      "id": 43,
+      "question": "计算作业1成绩的平均分。",
+      "sql": "SELECT AVG(HW1) AS AvgHW1 FROM Homework;"
+    },
+    {
+      "id": 44,
+      "question": "计算作业2成绩的最高分。",
+      "sql": "SELECT MAX(HW2) AS MaxHW2 FROM Homework;"
+    },
+    {
+      "id": 45,
+      "question": "计算作业3成绩的最低分。",
+      "sql": "SELECT MIN(HW3) AS MinHW3 FROM Homework;"
+    },
+    {
+      "id": 46,
+      "question": "计算作业1成绩的总和。",
+      "sql": "SELECT SUM(HW1) AS SumHW1 FROM Homework;"
+    },
+    {
+      "id": 47,
+      "question": "查询学分数最高的课程信息。",
+      "sql": "SELECT * FROM C ORDER BY CREDIT DESC LIMIT 1;"
+    },
+    {
+      "id": 48,
+      "question": "查询出生日期最早的学生信息。",
+      "sql": "SELECT * FROM S ORDER BY Birth ASC LIMIT 1;"
+    },
+    {
+      "id": 49,
+      "question": "查询学生信息，并按照班级升序、同一班级内按出生日期降序排序。",
+      "sql": "SELECT * FROM S ORDER BY Class ASC, Birth DESC;"
+    },
+    {
+      "id": 50,
+      "question": "查询课程信息，并先按学分降序、再按学时升序排序。",
+      "sql": "SELECT * FROM C ORDER BY CREDIT DESC, CT ASC;"
+    }
+  ]
